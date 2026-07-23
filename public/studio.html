@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tegalsari - Studio Peta</title>
+    <meta name="description" content="Dasbor Web GIS untuk analisis data Dusun Tegalsari.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+   <link href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" rel="stylesheet">
+<script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="style.css">
+    <link rel="shortcut icon" href="./data/logo.jpg" type="image/x-icon">
+</head>
+
+<body>
+
+    <div id="map-background"></div>
+
+    <!-- ===== INTRO — Split screen baru ===== -->
+    <div id="intro-overlay">
+        <div class="intro-split">
+            <!-- Kiri: info panel -->
+            <div class="intro-panel">
+                <div class="intro-panel__header">
+                    <span class="intro-stamp">PKL · SIG UGM · 2026</span>
+                </div>
+                <div class="intro-panel__body">
+                    <p class="intro-label">Studio Peta Interaktif</p>
+                    <h1 class="intro-title">Tegalsari<br><span>Studio</span></h1>
+                    <div class="intro-divider"></div>
+                    <p class="intro-desc">Platform Web GIS untuk eksplorasi data geospasial Dusun Tegalsari, Sumberarum, Tempuran, Magelang.</p>
+                    <div class="intro-meta">
+                        <div class="intro-meta-item">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            <span>7°33′LS · 110°10′BT</span>
+                        </div>
+                        <div class="intro-meta-item">
+                            <i class="fa-solid fa-ruler-combined"></i>
+                            <span>21.37 Ha</span>
+                        </div>
+                        <div class="intro-meta-item">
+                            <i class="fa-solid fa-house"></i>
+                            <span>163 Persil</span>
+                        </div>
+                    </div>
+                    <button id="start-btn">
+                        <i class="fa-solid fa-play"></i>
+                        Mulai Eksplorasi
+                    </button>
+                </div>
+                <div class="intro-panel__footer">
+                    <span>© 2026 PKL A4 · Departemen Teknologi Kebumian UGM</span>
+                </div>
+            </div>
+            <!-- Kanan: map preview -->
+            <div class="intro-map-side">
+                <div class="intro-map-overlay"></div>
+                <div class="intro-map-label">
+                    <i class="fa-solid fa-satellite"></i>
+                    Peta Wilayah Dusun Tegalsari
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== APP CONTAINER ===== -->
+    <div id="app-container" class="hidden left-collapsed right-collapsed both-collapsed">
+
+        <!-- HEADER -->
+        <header class="main-header">
+            <div class="header-left">
+                <div class="header-brand" id="reset-to-intro-btn">
+                    <div class="header-brand__dot"></div>
+                    <span class="app-title">Tegalsari Studio</span>
+                </div>
+                <!-- Breadcrumb section aktif -->
+                <div class="header-breadcrumb">
+                    <span id="active-section-label">
+                        <i class="fa-solid fa-map"></i> Peta
+                    </span>
+                </div>
+            </div>
+
+            <div class="header-center">
+                <!-- Koordinat live -->
+                <div class="header-coords" id="header-coords">
+                    <i class="fa-solid fa-crosshairs"></i>
+                    <span id="coord-lat">-7.5510°</span>
+                    <span class="coord-sep">·</span>
+                    <span id="coord-lng">110.1740°</span>
+                </div>
+            </div>
+
+            <div class="header-right">
+                <button class="header-button download-btn">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Unduh</span>
+                </button>
+                <nav class="header-nav">
+                    <a href="#" class="nav-link active">Studio</a>
+                    <a href="index.html" class="nav-link">Beranda</a>
+                    <a href="dokumentasi.html" target="_blank" class="nav-link">
+                        Docs <i class="fa-solid fa-arrow-up-right-from-square"></i>
+                    </a>
+                </nav>
+            </div>
+        </header>
+
+        <!-- SIDEBAR KIRI — card nav, beda dari icon-only tahun lalu -->
+        <aside class="sidebar sidebar-left">
+            <div class="sidebar-left-content">
+
+                <!-- Label atas -->
+                <div class="sidebar-section-label">Navigasi</div>
+
+                <nav class="main-nav">
+                    <ul>
+                        <li class="nav-item active" data-target="#map-section">
+                            <div class="nav-item__icon">
+                                <img src="./data/icon/map.svg" alt="Peta" class="nav-icon" />
+                            </div>
+                            <div class="nav-item__text">
+                                <span class="nav-item__name">Peta</span>
+                                <span class="nav-item__desc">Eksplorasi spasial</span>
+                            </div>
+                            <div class="nav-item__indicator"></div>
+                        </li>
+                        <li class="nav-item" data-target="#data-section">
+                            <div class="nav-item__icon">
+                                <img src="./data/icon/table.svg" alt="Data" class="nav-icon" />
+                            </div>
+                            <div class="nav-item__text">
+                                <span class="nav-item__name">Data</span>
+                                <span class="nav-item__desc">Analisis & statistik</span>
+                            </div>
+                            <div class="nav-item__indicator"></div>
+                        </li>
+                        <li class="nav-item" data-target="#media-section">
+                            <div class="nav-item__icon">
+                                <img src="./data/icon/photo.svg" alt="Media" class="nav-icon" />
+                            </div>
+                            <div class="nav-item__text">
+                                <span class="nav-item__name">Media</span>
+                                <span class="nav-item__desc">Galeri survei</span>
+                            </div>
+                            <div class="nav-item__indicator"></div>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Spacer -->
+                <div class="sidebar-left-spacer"></div>
+
+                <!-- Info mini dusun -->
+                <div class="sidebar-dusun-card">
+                    <div class="sidebar-dusun-card__title">Tegalsari</div>
+                    <div class="sidebar-dusun-card__sub">Sumberarum · Magelang</div>
+                    <div class="sidebar-dusun-card__stats">
+                        <span><strong>163</strong> Persil</span>
+                        <span><strong>21.37</strong> Ha</span>
+                    </div>
+                </div>
+
+                <!-- About di bawah -->
+                <div class="about-section">
+                    <div class="nav-item" data-target="#about-studio-section">
+                        <div class="nav-item__icon">
+                            <img src="./data/icon/about.svg" alt="About" class="nav-icon" />
+                        </div>
+                        <div class="nav-item__text">
+                            <span class="nav-item__name">Tentang</span>
+                            <span class="nav-item__desc">Info proyek</span>
+                        </div>
+                        <div class="nav-item__indicator"></div>
+                    </div>
+                </div>
+
+            </div>
+        </aside>
+
+        <!-- MAP CONTAINER -->
+        <main id="map-container">
+
+            <!-- MAP SECTION -->
+            <div id="map-section" class="content-section">
+                <div id="map"></div>
+
+                <!-- Compass baru -->
+                <div class="map-compass" id="map-compass">
+                    <div class="compass-needle" id="compass-needle">
+                        <i class="fa-solid fa-location-arrow"></i>
+                    </div>
+                    <span>N</span>
+                </div>
+
+                <!-- Zoom indicator baru -->
+                <div class="map-zoom-indicator" id="map-zoom-indicator">
+                    Z <span id="zoom-level-display">15</span>
+                </div>
+
+                <div class="map-controls-top-right">
+                    <button id="open-right-sidebar-btn" class="map-control-btn" title="Atribut Peta">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                </div>
+
+                <div class="map-controls-bottom-right">
+                    <button id="rotate-btn" class="map-control-btn" title="Rotasi Otomatis">
+                        <i class="fa-solid fa-rotate"></i>
+                    </button>
+                    <button id="reset-view-btn" class="map-control-btn" title="Reset Tampilan">
+                        <i class="fa-solid fa-location-crosshairs"></i>
+                    </button>
+                    <div class="zoom-controls">
+                        <button id="zoom-in-btn" class="map-control-btn zoom-btn">+</button>
+                        <button id="zoom-out-btn" class="map-control-btn zoom-btn">-</button>
+                    </div>
+                </div>
+
+                <!-- Scale bar baru -->
+                <div class="map-scale-bar" id="map-scale-bar">
+                    <div class="scale-bar-line"></div>
+                    <span class="scale-bar-label">~200 m</span>
+                </div>
+            </div>
+
+            <!-- DATA SECTION -->
+            <div id="data-section" class="content-section hidden">
+                <div id="data-loader">
+                    <div class="spinner"></div>
+                    <p>Mengambil dan memproses data...</p>
+                </div>
+                <div id="data-content-wrapper" class="hidden">
+                    <div class="data-header">
+                        <div class="data-header__left">
+                            <div class="data-header__badge">
+                                <i class="fa-solid fa-chart-bar"></i> Analisis
+                            </div>
+                            <h2>Dasbor Analisis Data</h2>
+                            <p>Ringkasan data hasil survei lapangan Tegalsari · Juli 2026</p>
+                        </div>
+                    </div>
+
+                    <div class="summary-grid-2-col">
+                        <div class="summary-card">
+                            <i class="fa-solid fa-building"></i>
+                            <div class="summary-text">
+                                <span id="kpi-total-bangunan" class="summary-value">0</span>
+                                <span class="summary-label">Total Bangunan</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <i class="fa-solid fa-chart-area"></i>
+                            <div class="summary-text">
+                                <span id="kpi-total-lahan" class="summary-value">0.00 Ha</span>
+                                <span class="summary-label">Total Luas Terpetakan</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="summary-grid-4-col">
+                        <div class="summary-card">
+                            <i class="fa-solid fa-children"></i>
+                            <div class="summary-text">
+                                <span id="kpi-total-anak" class="summary-value">0</span>
+                                <span class="summary-label">Anak Bersekolah</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <i class="fa-solid fa-user-tie"></i>
+                            <div class="summary-text">
+                                <span id="dominant-job" class="summary-value">-</span>
+                                <span class="summary-label">Pekerjaan Dominan</span>
+                            </div>
+                        </div>
+                        <div class="summary-card">
+                            <i class="fa-solid fa-graduation-cap"></i>
+                            <div class="summary-text">
+                                <span id="dominant-education" class="summary-value">-</span>
+                                <span class="summary-label">Pendidikan Dominan</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="chart-card large">
+    <h3>Analisis Fisik Bangunan</h3>
+    <p class="chart-subtitle">Komposisi material, sanitasi, fungsi, dan konektivitas bangunan hasil survei lapangan.</p>
+    <div class="composite-chart-container">
+        <div class="composite-chart-item">
+            <h4>Material Dinding</h4>
+            <div class="chart-wrapper small-chart"><canvas id="materialChart"></canvas></div>
+            <div id="materialLegend" class="custom-legend scrollable-legend"></div>
+        </div>
+        <div class="composite-chart-item">
+            <h4>Jenis Lantai</h4>
+            <div class="chart-wrapper small-chart"><canvas id="floorChart"></canvas></div>
+            <div id="floorLegend" class="custom-legend scrollable-legend"></div>
+        </div>
+        <div class="composite-chart-item">
+            <h4>Sanitasi</h4>
+            <div class="chart-wrapper small-chart"><canvas id="ventilationChart"></canvas></div>
+            <div id="ventilationLegend" class="custom-legend scrollable-legend"></div>
+        </div>
+        <div class="composite-chart-item">
+            <h4>Fungsi Bangunan</h4>
+            <div class="chart-wrapper small-chart"><canvas id="floorCountChart"></canvas></div>
+            <div id="floorCountLegend" class="custom-legend scrollable-legend"></div>
+        </div>
+        <div class="composite-chart-item">
+            <h4>Akses Internet</h4>
+            <div class="chart-wrapper small-chart"><canvas id="windowCountChart"></canvas></div>
+            <div id="windowCountLegend" class="custom-legend scrollable-legend"></div>
+        </div>
+    </div>
+</div>
+
+                    <div class="chart-card large">
+                        <h3>Pekerjaan Kepala Keluarga</h3>
+                        <p class="chart-subtitle">Jumlah KK berdasarkan jenis pekerjaan.</p>
+                        <div class="chart-wrapper tall-chart"><canvas id="jobChart"></canvas></div>
+                    </div>
+
+                    <div class="chart-card large">
+                        <h3>Anak Berdasarkan Jenjang Pendidikan</h3>
+                        <p class="chart-subtitle">Total anak yang menempuh pendidikan per jenjang.</p>
+                        <div class="chart-wrapper"><canvas id="schoolChart"></canvas></div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- MEDIA SECTION -->
+            <div id="media-section" class="content-section hidden">
+                <div id="media-loader">
+                    <div class="spinner"></div>
+                    <p>Memuat media...</p>
+                </div>
+                <div id="media-content-wrapper" class="hidden">
+                    <div class="data-header">
+                        <div class="data-header__left">
+                            <div class="data-header__badge">
+                                <i class="fa-solid fa-camera"></i> Media
+                            </div>
+                            <h2>Galeri Media</h2>
+                            <p>Dokumentasi foto dan video dari survei lapangan Tegalsari.</p>
+                        </div>
+                        <div class="tabs">
+                            <button class="tab-btn active" data-type="photo">
+                                <i class="fa-solid fa-camera"></i> Foto
+                            </button>
+                            <button class="tab-btn" data-type="video">
+                                <i class="fa-solid fa-video"></i> Video
+                            </button>
+                        </div>
+                    </div>
+
+                    <div id="photo-content-container">
+                        <div class="media-filter-controls">
+                            <div class="filter-wrapper">
+                                <label for="media-area-filter">
+                                    <i class="fa-solid fa-filter"></i> Filter Area
+                                </label>
+                                <select id="media-area-filter" class="custom-select">
+                                    <option value="semua">Semua Foto</option>
+                                </select>
+                            </div>
+                            <div class="search-wrapper">
+                                <i class="fa-solid fa-magnifying-glass" id="search-icon"></i>
+                                <input type="text" id="media-search" placeholder="Search.." spellcheck="false">
+                            </div>
+                        </div>
+                        <div id="photo-gallery" class="media-gallery"></div>
+                        <div id="pagination-controls"></div>
+                    </div>
+
+                    <div id="video-gallery" class="media-gallery hidden"></div>
+                </div>
+            </div>
+
+            <!-- ABOUT SECTION -->
+            <div id="about-studio-section" class="content-section hidden">
+                <div class="about-content-wrapper">
+                    <div class="data-header">
+                        <div class="data-header__left">
+                            <div class="data-header__badge">
+                                <i class="fa-solid fa-book"></i> Dokumentasi
+                            </div>
+                            <h2>Tentang Studio Peta Tegalsari</h2>
+                            <p>Panduan Teknis, Fitur, dan Alur Kerja Proyek.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="about-subtitle"><i class="fa-solid fa-rocket"></i> Pendahuluan</h3>
+                    <div class="about-prose">
+                        <p><strong>Studio Peta Tegalsari</strong> adalah platform Web GIS interaktif sebagai hasil akhir dari proyek "Akuisisi Data dan Pemetaan Dusun Tegalsari" (PKL 2 · SVIG223439). Mengubah data mentah lapangan menjadi wawasan visual yang dinamis dan mudah diakses.</p>
+                    </div>
+
+                    <h3 class="about-subtitle"><i class="fa-solid fa-diagram-project"></i> Alur Kerja Data</h3>
+                    <div class="workflow-grid">
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fa-solid fa-satellite-dish"></i></div>
+                            <h4>1. Akuisisi Lapangan</h4>
+                            <p>ODK Collect, GNSS Geodetik Trimble, dan Drone DJI Mavic.</p>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fa-solid fa-layer-group"></i></div>
+                            <h4>2. Pengolahan SIG</h4>
+                            <p>Koreksi, editing, dan validasi topologi di ArcGIS Pro.</p>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fa-solid fa-map-location-dot"></i></div>
+                            <h4>3. Konversi Web</h4>
+                            <p>Ekspor shapefile menjadi GeoJSON untuk web.</p>
+                        </div>
+                        <div class="workflow-step">
+                            <div class="workflow-icon"><i class="fa-solid fa-code"></i></div>
+                            <h4>4. Pengembangan Aplikasi</h4>
+                            <p>HTML, CSS, JavaScript + MapLibre GL JS.</p>
+                        </div>
+                    </div>
+
+                    <h3 class="about-subtitle"><i class="fa-solid fa-star"></i> Panduan Fitur</h3>
+                    <ul class="feature-list">
+                        <li class="feature-list-item">
+                            <i class="fa-solid fa-sliders"></i>
+                            <div><strong>Manajemen Layer:</strong> Tampilkan/sembunyikan lapisan data via panel "Atribut Peta".</div>
+                        </li>
+                        <li class="feature-list-item">
+                            <i class="fa-solid fa-map"></i>
+                            <div><strong>Kontrol Peta:</strong> Ganti basemap, atur pitch 3D, dan toggle label peta.</div>
+                        </li>
+                        <li class="feature-list-item">
+                            <i class="fa-solid fa-crosshairs"></i>
+                            <div><strong>Koordinat Live:</strong> Koordinat kursor ditampilkan real-time di header atas.</div>
+                        </li>
+                        <li class="feature-list-item">
+                            <i class="fa-solid fa-tags"></i>
+                            <div><strong>Legenda Dinamis:</strong> Legenda otomatis menyesuaikan layer aktif.</div>
+                        </li>
+                        <li class="feature-list-item">
+                            <i class="fa-solid fa-table-columns"></i>
+                            <div><strong>Multi-Panel:</strong> Beralih antara Peta, Data, Media, dan Tentang.</div>
+                        </li>
+                    </ul>
+
+                    <div class="credits-box">
+                        <h3><i class="fa-solid fa-users"></i> Tim PKL A4 — Tegalsari 2026</h3>
+                        <div class="team-names">
+                            <span>Alif Farhan Kurniawan</span> ·
+                            <span>Rafli Andrian Hafani</span> ·
+                            <span>Athila</span> ·
+                            <span>Ratih Esti Mutiarahati</span>
+                        </div>
+                        <hr class="credit-divider">
+                        <p class="acknowledgement">Terima kasih kepada seluruh Dosen Pembimbing, Asisten PKL, dan Perangkat Desa Sumberarum.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button id="toggle-left-sidebar-btn" class="sidebar-toggle-btn left-toggle" title="Toggle Panel">
+                <i class="fa-solid fa-chevron-left"></i>
+            </button>
+        </main>
+
+        <!-- SIDEBAR KANAN -->
+        <aside class="sidebar sidebar-right">
+            <div class="sidebar-right-header">
+                <div class="sidebar-right-header__title">
+                    <div class="sidebar-right-header__dot"></div>
+                    <h2 class="sidebar-title">Atribut Peta</h2>
+                </div>
+                <div class="sidebar-actions">
+                    <button class="icon-btn" id="close-right-sidebar-btn" title="Tutup">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+            </div>
+
+            <div class="sidebar-right-content">
+                <!-- Accordion: Layer Data -->
+                <div class="sidebar-accordion">
+                    <div class="accordion-header">
+                        <span><i class="fa-solid fa-layer-group"></i> Layer Data</span>
+                        <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="control-group toggle-control">
+                            <label for="toggle-administrasi-layer">Batas Administrasi</label>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-administrasi-layer" checked>
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="control-group">
+    <label for="area-select">Area Tematik</label>
+    <select id="area-select" class="custom-select">
+        <option value="none" selected>Tidak Menampilkan</option>
+        <option value="penggunaan-lahan">Penggunaan Lahan</option>
+        <option value="bangunan">Bangunan</option>
+        <option value="perkebunan">Perkebunan</option>
+        <option value="batas-rt">Batas RT (Pendidikan & Pekerjaan)</option>
+    </select>
+</div>
+                        <div class="control-group toggle-control">
+                            <label for="toggle-jalan-layer">Jaringan Jalan</label>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-jalan-layer">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                        <div class="control-group toggle-control">
+                            <label for="toggle-orientasi-layer">Orientasi Bangunan</label>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-orientasi-layer">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Accordion: Tampilan -->
+                <div class="sidebar-accordion">
+                    <div class="accordion-header">
+                        <span><i class="fa-solid fa-sliders"></i> Tampilan</span>
+                        <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+                    </div>
+                    <div class="accordion-body">
+                        <div class="control-group">
+                            <label for="pitch-slider">Kemiringan (Pitch)</label>
+                            <div class="slider-container">
+                                <input type="range" id="pitch-slider" min="0" max="85" value="50" step="1">
+                                <span id="pitch-value">50</span>
+                            </div>
+                        </div>
+                        <div class="control-group">
+                            <label for="layer-select">Lapisan Dasar</label>
+                            <select id="layer-select" class="custom-select">
+                                <option value="satellite-streets-v12">Satelit</option>
+                                <option value="streets-v12">Jalan</option>
+                                <option value="outdoors-v12">Outdoor</option>
+                                <option value="light-v11">Cerah</option>
+                                <option value="dark-v11">Gelap</option>
+                                <option value="navigation-day-v1">Navigasi Siang</option>
+                                <option value="navigation-night-v1">Navigasi Malam</option>
+                            </select>
+                        </div>
+                        <div class="control-group toggle-control">
+                            <label for="toggle-basemap-labels">Label Peta</label>
+                            <label class="switch">
+                                <input type="checkbox" id="toggle-basemap-labels">
+                                <span class="slider round"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+
+                <!-- Legenda -->
+                <div class="sidebar-accordion">
+                    <div class="accordion-header">
+                        <span><i class="fa-solid fa-list"></i> Legenda</span>
+                        <i class="fa-solid fa-chevron-down accordion-arrow"></i>
+                    </div>
+                    <div class="accordion-body">
+                        <div id="legend-container"></div>
+                    </div>
+                </div>
+
+                <hr class="divider">
+            </div>
+        </aside>
+
+    </div>
+
+    <!-- STATUS BAR BAWAH — fitur baru -->
+    <div class="app-status-bar" id="app-status-bar">
+        <div class="status-bar__left">
+            <span class="status-item">
+                <i class="fa-solid fa-location-dot"></i>
+                Dusun Tegalsari · Sumberarum · Tempuran · Magelang
+            </span>
+        </div>
+        <div class="status-bar__right">
+            <span class="status-item" id="status-zoom">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                Zoom: <strong id="status-zoom-val">15</strong>
+            </span>
+            <span class="status-divider"></span>
+            <span class="status-item">
+                <i class="fa-solid fa-calendar"></i>
+                Data: Juli 2026
+            </span>
+            <span class="status-divider"></span>
+            <span class="status-item">
+                <i class="fa-solid fa-satellite"></i>
+                MapLibre GL JS v5.6
+            </span>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX Gambar -->
+    <div id="lightbox" class="lightbox-overlay hidden">
+        <span class="lightbox-close">×</span>
+        <a id="lightbox-download-btn" class="lightbox-download" title="Unduh" download>
+            <i class="fa-solid fa-download"></i>
+        </a>
+        <img class="lightbox-content" id="lightbox-img">
+        <div id="lightbox-caption"></div>
+        <a class="lightbox-prev">❮</a>
+        <a class="lightbox-next">❯</a>
+    </div>
+
+    <!-- LIGHTBOX Unduhan -->
+    <div id="download-lightbox" class="download-lightbox-overlay hidden">
+        <div class="download-lightbox-container">
+            <div class="download-lightbox-header">
+                <h3 id="download-lightbox-title">Unduh File</h3>
+                <button id="download-lightbox-close" class="icon-btn" title="Tutup">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div id="download-lightbox-list" class="download-lightbox-list"></div>
+            <div class="download-lightbox-footer">
+                <div id="download-status" class="download-status-text"></div>
+                <button id="download-lightbox-action-btn" class="header-button">
+                    <i class="fa-solid fa-download"></i>
+                    <span>Unduh yang Dipilih</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- LIGHTBOX Video -->
+    <div id="video-lightbox" class="lightbox-overlay hidden">
+        <div class="video-lightbox-container">
+            <div class="video-lightbox-header">
+                <h3 id="video-lightbox-title"></h3>
+                <div class="video-lightbox-actions">
+                    <a id="video-lightbox-download" href="#" target="_blank" class="lightbox-download" title="Unduh">
+                        <i class="fa-solid fa-download"></i>
+                    </a>
+                    <button id="video-lightbox-close" class="lightbox-close">×</button>
+                </div>
+            </div>
+            <div class="video-wrapper">
+                <div id="video-player"></div>
+            </div>
+        </div>
+    </div>
+
+    <script src="./data/foto_data.js"></script>
+    <script src="script.js"></script>
+
+    <!-- Script tambahan untuk fitur baru -->
+    <script>
+        // Coordinate tracker
+        const map = window._map;
+        const coordLat = document.getElementById('coord-lat');
+        const coordLng = document.getElementById('coord-lng');
+        const zoomDisplay = document.getElementById('zoom-level-display');
+        const statusZoomVal = document.getElementById('status-zoom-val');
+
+        // Accordion sidebar kanan
+        document.querySelectorAll('.accordion-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const accordion = header.parentElement;
+                accordion.classList.toggle('accordion--open');
+            });
+        });
+        // Buka semua accordion by default
+        document.querySelectorAll('.sidebar-accordion').forEach(a => a.classList.add('accordion--open'));
+
+        // Update breadcrumb saat nav item klik
+        const sectionLabels = {
+            '#map-section': '<i class="fa-solid fa-map"></i> Peta',
+            '#data-section': '<i class="fa-solid fa-chart-bar"></i> Data',
+            '#media-section': '<i class="fa-solid fa-camera"></i> Media',
+            '#about-studio-section': '<i class="fa-solid fa-book"></i> Tentang'
+        };
+        document.querySelectorAll('.nav-item[data-target]').forEach(item => {
+            item.addEventListener('click', () => {
+                const label = document.getElementById('active-section-label');
+                if (label && sectionLabels[item.dataset.target]) {
+                    label.innerHTML = sectionLabels[item.dataset.target];
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

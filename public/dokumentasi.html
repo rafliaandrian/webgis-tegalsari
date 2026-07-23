@@ -1,0 +1,594 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dokumentasi Proyek - Studio Peta Tegalsari</title>
+    <meta name="description" content="Dokumentasi teknis proyek Akuisisi Data dan Pemetaan Dusun Tegalsari. Alur kerja, arsitektur, teknologi, dan tim pengembang.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="dokumentasi.css">
+    <link rel="shortcut icon" href="./data/logo.jpg" type="image/x-icon">
+</head>
+<body>
+
+    <!-- HEADER -->
+    <header class="doc-header">
+        <div class="doc-header__inner">
+            <a href="index.html" class="back-link">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>Beranda</span>
+            </a>
+            <div class="doc-header__brand">
+                <span class="brand-name">Tegalsari</span>
+                <span class="brand-badge">Docs</span>
+            </div>
+            <a href="studio.html" target="_blank" class="doc-header__cta">
+                <i class="fa-solid fa-map"></i> Studio Peta
+            </a>
+        </div>
+    </header>
+
+    <!-- HERO DOKUMENTASI -->
+    <section class="doc-hero">
+        <div class="doc-hero__bg"></div>
+        <div class="doc-hero__content">
+            <span class="doc-hero__eyebrow">
+                <i class="fa-solid fa-book-open"></i>
+                PKL 2 · SIG UGM · 2026
+            </span>
+            <h1>Dokumentasi<br><span>Proyek Tegalsari</span></h1>
+            <p>Panduan teknis lengkap: metodologi lapangan, arsitektur sistem, teknologi yang digunakan, hingga profil tim pengembang Studio Peta Interaktif Dusun Tegalsari.</p>
+            <div class="doc-hero__pills">
+                <span><i class="fa-solid fa-map-location-dot"></i> Dusun Tegalsari, Magelang</span>
+                <span><i class="fa-solid fa-calendar"></i> Juli 2026</span>
+                <span><i class="fa-solid fa-users"></i> PKL A4 · SIG UGM</span>
+            </div>
+        </div>
+        <div class="doc-hero__scroll">
+            <i class="fa-solid fa-chevron-down"></i>
+        </div>
+    </section>
+
+    <!-- LAYOUT UTAMA: SIDEBAR + KONTEN -->
+    <div class="doc-layout">
+
+        <!-- SIDEBAR -->
+        <aside class="doc-sidebar">
+            <div class="doc-sidebar__sticky">
+                <p class="sidebar-heading">Navigasi</p>
+                <nav>
+                    <ul>
+                        <li>
+                            <a href="#pendahuluan" class="sidebar-link active">
+                                <i class="fa-solid fa-rocket"></i>
+                                <span>Pendahuluan</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#arsitektur-proyek" class="sidebar-link">
+                                <i class="fa-solid fa-sitemap"></i>
+                                <span>Arsitektur</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#alur-kerja" class="sidebar-link">
+                                <i class="fa-solid fa-diagram-project"></i>
+                                <span>Alur Kerja</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#fitur-studio" class="sidebar-link">
+                                <i class="fa-solid fa-star"></i>
+                                <span>Fitur Studio</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#teknologi" class="sidebar-link">
+                                <i class="fa-solid fa-microchip"></i>
+                                <span>Teknologi</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="#kredit" class="sidebar-link">
+                                <i class="fa-solid fa-users"></i>
+                                <span>Tim & Kredit</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                <!-- Progress indicator -->
+                <div class="sidebar-progress">
+                    <div class="sidebar-progress__bar" id="progressBar"></div>
+                </div>
+                <p class="sidebar-progress__label">Progress Baca</p>
+            </div>
+        </aside>
+
+        <!-- KONTEN -->
+        <main class="doc-content">
+
+            <!-- PENDAHULUAN -->
+            <section id="pendahuluan" class="doc-section">
+                <div class="section-label">
+                    <span class="label-number">01</span>
+                    <span class="label-line"></span>
+                </div>
+                <h2 class="doc-section__title">
+                    <i class="fa-solid fa-rocket"></i> Pendahuluan
+                </h2>
+                <div class="doc-section__body">
+                    <p>Dokumentasi ini merinci proses teknis dan metodologi dari proyek <strong>"Akuisisi Data dan Pemetaan Dusun Tegalsari"</strong> — sebuah implementasi Praktik Kerja Lapangan 2 (SVIG223439) yang mengintegrasikan data spasial ke dalam platform digital yang dinamis dan interaktif.</p>
+                    <p>Hasil akhirnya adalah <strong>Studio Peta Tegalsari</strong>, platform Web GIS yang berfungsi sebagai media diseminasi informasi geospasial modern. Seluruh rangkaian, dari akuisisi data primer di lapangan hingga pengembangan aplikasi web, dijelaskan secara komprehensif di sini.</p>
+
+                    <!-- Highlight card -->
+                    <div class="highlight-card">
+                        <div class="highlight-card__icon">
+                            <i class="fa-solid fa-circle-info"></i>
+                        </div>
+                        <div>
+                            <strong>Mata Kuliah</strong>
+                            <p>Praktik Kerja Lapangan 2 (SVIG223439) · Program Studi Sarjana Terapan Sistem Informasi Geografis · Universitas Gadjah Mada · 2026</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ARSITEKTUR -->
+            <section id="arsitektur-proyek" class="doc-section">
+                <div class="section-label">
+                    <span class="label-number">02</span>
+                    <span class="label-line"></span>
+                </div>
+                <h2 class="doc-section__title">
+                    <i class="fa-solid fa-sitemap"></i> Arsitektur Proyek
+                </h2>
+                <div class="doc-section__body">
+                    <p>Sistem dirancang secara modular, terdiri dari beberapa komponen utama yang saling terhubung untuk memberikan pengalaman pengguna yang lengkap.</p>
+
+                    <div class="arch-grid">
+                        <div class="arch-card arch-card--primary">
+                            <div class="arch-card__icon">
+                                <i class="fa-solid fa-house"></i>
+                            </div>
+                            <h3>Landing Page</h3>
+                            <p>Gerbang utama proyek. Menampilkan visualisasi globe yang bertransisi ke area studi, ringkasan profil dusun, dan fitur utama platform.</p>
+                            <div class="arch-card__tag">index.html</div>
+                        </div>
+                        <div class="arch-card arch-card--featured">
+                            <div class="arch-card__icon">
+                                <i class="fa-solid fa-map"></i>
+                            </div>
+                            <h3>Studio Peta</h3>
+                            <p>Aplikasi inti berupa dasbor Web GIS. Pengguna berinteraksi dengan data geospasial, mengontrol visualisasi layer, dan memanfaatkan alat analisis.</p>
+                            <div class="arch-card__tag">studio.html</div>
+                        </div>
+                        <div class="arch-card">
+                            <div class="arch-card__icon">
+                                <i class="fa-solid fa-id-card"></i>
+                            </div>
+                            <h3>Profil Dusun</h3>
+                            <p>Konten non-spasial: sejarah, visi-misi, struktur perangkat, galeri foto, dan peta lokasi statis.</p>
+                            <div class="arch-card__tag">profil-dusun.html</div>
+                        </div>
+                        <div class="arch-card">
+                            <div class="arch-card__icon">
+                                <i class="fa-solid fa-book"></i>
+                            </div>
+                            <h3>Dokumentasi</h3>
+                            <p>Halaman ini. Menyediakan konten teknis dan metodologis sebagai referensi proyek.</p>
+                            <div class="arch-card__tag">dokumentasi.html</div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ALUR KERJA -->
+            <section id="alur-kerja" class="doc-section">
+                <div class="section-label">
+                    <span class="label-number">03</span>
+                    <span class="label-line"></span>
+                </div>
+                <h2 class="doc-section__title">
+                    <i class="fa-solid fa-diagram-project"></i> Alur Kerja Proyek
+                </h2>
+                <div class="doc-section__body">
+                    <p>Proses pengembangan dibagi menjadi tiga tahapan utama yang saling berkaitan, sesuai metodologi pemetaan partisipatif.</p>
+
+                    <!-- Timeline tahapan -->
+                    <div class="workflow-timeline">
+
+                        <div class="workflow-phase">
+                            <div class="workflow-phase__header">
+                                <div class="phase-badge phase-badge--1">
+                                    <i class="fa-solid fa-clipboard-list"></i>
+                                </div>
+                                <div>
+                                    <span class="phase-label">Tahap 1</span>
+                                    <h3>Pra-Lapangan</h3>
+                                </div>
+                            </div>
+                            <div class="workflow-phase__steps">
+                                <div class="step-item">
+                                    <div class="step-num">1</div>
+                                    <div>
+                                        <strong>Persiapan Geodatabase</strong>
+                                        <p>Membuat struktur geodatabase (.gdb) di <code>ArcGIS Pro</code> untuk menampung data vektor.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-num">2</div>
+                                    <div>
+                                        <strong>Deliniasi Awal</strong>
+                                        <p>Deliniasi bangunan dan penggunaan lahan berdasarkan <code>Orthophoto</code> (foto udara tegak).</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-num">3</div>
+                                    <div>
+                                        <strong>Formulir Survei Digital</strong>
+                                        <p>Desain kerangka form survei <code>.xls</code> untuk diunggah ke <code>Ona.io</code> dan digunakan di <code>ODK Collect</code>.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-num">4</div>
+                                    <div>
+                                        <strong>Penentuan Sampel</strong>
+                                        <p>Membuat 50 titik sampel acak (random sampling) untuk uji akurasi penggunaan lahan.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="workflow-phase">
+                            <div class="workflow-phase__header">
+                                <div class="phase-badge phase-badge--2">
+                                    <i class="fa-solid fa-person-hiking"></i>
+                                </div>
+                                <div>
+                                    <span class="phase-label">Tahap 2</span>
+                                    <h3>Lapangan</h3>
+                                </div>
+                            </div>
+                            <div class="workflow-phase__steps">
+                                <div class="step-item">
+                                    <div class="step-num">1</div>
+                                    <div>
+                                        <strong>Survei Validasi</strong>
+                                        <p>Validasi data interpretasi, survei kependudukan, dan pengisian formulir melalui <code>ODK Collect</code>.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-num">2</div>
+                                    <div>
+                                        <strong>Pengukuran Batas Presisi</strong>
+                                        <p>Pengukuran patok dan ICP menggunakan <code>GNSS Geodetik Trimble</code> dan aplikasi <code>Trimble TSM</code>.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-num">3</div>
+                                    <div>
+                                        <strong>Dokumentasi Visual</strong>
+                                        <p>Akuisisi foto udara menggunakan <code>Drone DJI Mavic</code> untuk dokumentasi wilayah.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="workflow-phase">
+                            <div class="workflow-phase__header">
+                                <div class="phase-badge phase-badge--3">
+                                    <i class="fa-solid fa-laptop-code"></i>
+                                </div>
+                                <div>
+                                    <span class="phase-label">Tahap 3</span>
+                                    <h3>Pasca-Lapangan</h3>
+                                </div>
+                            </div>
+                            <div class="workflow-phase__steps">
+                                <div class="step-item">
+                                    <div class="step-num">1</div>
+                                    <div>
+                                        <strong>Pengolahan Data SIG</strong>
+                                        <p>Koreksi, editing, validasi topologi, dan pembuatan layout peta tematik di <code>ArcGIS Pro</code>.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-num">2</div>
+                                    <div>
+                                        <strong>Konversi ke Format Web</strong>
+                                        <p>Ekspor shapefile, lalu konversi menjadi <code>GeoJSON</code> untuk ditampilkan di web.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-num">3</div>
+                                    <div>
+                                        <strong>Pengembangan Aplikasi Web</strong>
+                                        <p>Membangun Landing Page & Studio Peta menggunakan <code>HTML, CSS, JavaScript</code> + <code>MapLibre GL JS</code>.</p>
+                                    </div>
+                                </div>
+                                <div class="step-item">
+                                    <div class="step-num">4</div>
+                                    <div>
+                                        <strong>Produk Akhir</strong>
+                                        <p>Merancang <code>Album Peta</code> digital di Canva dan menyusun Laporan Akhir PKL.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </section>
+
+            <!-- FITUR STUDIO -->
+            <section id="fitur-studio" class="doc-section">
+                <div class="section-label">
+                    <span class="label-number">04</span>
+                    <span class="label-line"></span>
+                </div>
+                <h2 class="doc-section__title">
+                    <i class="fa-solid fa-star"></i> Fitur Studio Peta
+                </h2>
+                <div class="doc-section__body">
+                    <p>Aplikasi Studio Peta dilengkapi berbagai fitur untuk eksplorasi data geospasial yang komprehensif dan intuitif.</p>
+
+                    <div class="feature-list-doc">
+                        <div class="feature-doc-item">
+                            <div class="feature-doc-icon">
+                                <i class="fa-solid fa-layer-group"></i>
+                            </div>
+                            <div>
+                                <h4>Manajemen Layer Interaktif</h4>
+                                <p>Kontrol penuh untuk menampilkan/menyembunyikan lapisan data: Batas Administrasi, Penggunaan Lahan, Bangunan, Jaringan Jalan, dan Titik Sarana Prasarana.</p>
+                            </div>
+                        </div>
+                        <div class="feature-doc-item">
+                            <div class="feature-doc-icon">
+                                <i class="fa-solid fa-sliders"></i>
+                            </div>
+                            <div>
+                                <h4>Kontrol Tampilan Peta</h4>
+                                <p>Mengubah basemap (satelit, jalan, gelap, dll.), mengatur pitch untuk efek 3D, dan toggle label peta untuk tampilan lebih bersih.</p>
+                            </div>
+                        </div>
+                        <div class="feature-doc-item">
+                            <div class="feature-doc-icon">
+                                <i class="fa-solid fa-list-check"></i>
+                            </div>
+                            <div>
+                                <h4>Legenda Dinamis</h4>
+                                <p>Panel legenda yang otomatis menyesuaikan isinya berdasarkan lapisan aktif, termasuk filter sub-kategori dalam sebuah layer.</p>
+                            </div>
+                        </div>
+                        <div class="feature-doc-item">
+                            <div class="feature-doc-icon">
+                                <i class="fa-solid fa-table-columns"></i>
+                            </div>
+                            <div>
+                                <h4>Antarmuka Multi-Panel</h4>
+                                <p>Navigasi tab antara tampilan Peta, Data Tabular, dan Galeri Media dengan tombol unduh yang menyesuaikan konteks panel aktif.</p>
+                            </div>
+                        </div>
+                        <div class="feature-doc-item">
+                            <div class="feature-doc-icon">
+                                <i class="fa-solid fa-film"></i>
+                            </div>
+                            <div>
+                                <h4>Animasi Pembuka Sinematik</h4>
+                                <p>Transisi dari tampilan globe global ke lokasi studi untuk memberikan pengalaman pembuka yang mengesankan dan kontekstual.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TEKNOLOGI -->
+            <section id="teknologi" class="doc-section">
+                <div class="section-label">
+                    <span class="label-number">05</span>
+                    <span class="label-line"></span>
+                </div>
+                <h2 class="doc-section__title">
+                    <i class="fa-solid fa-microchip"></i> Tumpukan Teknologi
+                </h2>
+                <div class="doc-section__body">
+                    <p>Kombinasi perangkat keras dan lunak dari domain SIG dan pengembangan web yang digunakan dalam proyek ini.</p>
+
+                    <div class="tech-grid">
+                        <div class="tech-category">
+                            <div class="tech-category__header">
+                                <i class="fa-solid fa-computer"></i>
+                                <h4>Perangkat Keras</h4>
+                            </div>
+                            <ul class="tech-list">
+                                <li><i class="fa-solid fa-laptop"></i> Laptop</li>
+                                <li><i class="fa-solid fa-mobile-screen"></i> Handphone</li>
+                                <li><i class="fa-solid fa-helicopter"></i> Drone DJI Mavic</li>
+                                <li><i class="fa-solid fa-satellite"></i> GNSS Geodetik Trimble</li>
+                                <li><i class="fa-solid fa-ruler-vertical"></i> Statif</li>
+                            </ul>
+                        </div>
+
+                        <div class="tech-category">
+                            <div class="tech-category__header">
+                                <i class="fa-solid fa-globe"></i>
+                                <h4>Pengembangan Web</h4>
+                            </div>
+                            <ul class="tech-list">
+                                <li><i class="fa-brands fa-html5"></i> HTML5 & CSS3</li>
+                                <li><i class="fa-brands fa-js"></i> JavaScript (Vanilla)</li>
+                                <li><i class="fa-solid fa-map"></i> MapLibre GL JS v5</li>
+                                <li><i class="fa-solid fa-server"></i> GeoJSON (data lokal)</li>
+                                <li><i class="fa-brands fa-bootstrap"></i> Bootstrap 5</li>
+                            </ul>
+                        </div>
+
+                        <div class="tech-category">
+                            <div class="tech-category__header">
+                                <i class="fa-solid fa-map-location-dot"></i>
+                                <h4>SIG & Survei</h4>
+                            </div>
+                            <ul class="tech-list">
+                                <li><i class="fa-solid fa-desktop"></i> ArcGIS Pro</li>
+                                <li><i class="fa-solid fa-mobile-screen"></i> ODK Collect</li>
+                                <li><i class="fa-solid fa-cloud"></i> Ona.io</li>
+                                <li><i class="fa-solid fa-location-crosshairs"></i> Trimble TSM</li>
+                                <li><i class="fa-solid fa-map-pin"></i> Avenza Maps</li>
+                            </ul>
+                        </div>
+
+                        <div class="tech-category">
+                            <div class="tech-category__header">
+                                <i class="fa-solid fa-palette"></i>
+                                <h4>Desain & Produk</h4>
+                            </div>
+                            <ul class="tech-list">
+                                <li><i class="fa-solid fa-pen-nib"></i> Canva (Album Peta)</li>
+                                <li><i class="fa-solid fa-file-pdf"></i> Laporan Akhir PKL</li>
+                                <li><i class="fa-brands fa-github"></i> Firebase Hosting</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- TIM & KREDIT -->
+            <section id="kredit" class="doc-section">
+                <div class="section-label">
+                    <span class="label-number">06</span>
+                    <span class="label-line"></span>
+                </div>
+                <h2 class="doc-section__title">
+                    <i class="fa-solid fa-users"></i> Tim & Kredit
+                </h2>
+                <div class="doc-section__body">
+                    <p>Proyek ini merupakan hasil kerja kolaboratif tim <strong>PKL A4 – Dusun Tegalsari</strong>, Program Studi Sarjana Terapan Sistem Informasi Geografis, Universitas Gadjah Mada (Angkatan 2024).</p>
+
+                    <div class="team-grid">
+                        <div class="team-card team-card--lead">
+                            <div class="team-card__avatar">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="team-card__info">
+                                <span class="team-card__role">Ketua</span>
+                                <h4>Alif Farhan Kurniawan</h4>
+                                <span class="team-card__nim">24/545785/SV/25758</span>
+                            </div>
+                        </div>
+                        <div class="team-card">
+                            <div class="team-card__avatar">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="team-card__info">
+                                <span class="team-card__role">Anggota</span>
+                                <h4>Rafli Andrian Hafani</h4>
+                                <span class="team-card__nim">24/536100/SV/24382</span>
+                            </div>
+                        </div>
+                        <div class="team-card">
+                            <div class="team-card__avatar">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="team-card__info">
+                                <span class="team-card__role">Anggota</span>
+                                <h4>Athila</h4>
+                                <span class="team-card__nim">24/544641/SV/25487</span>
+                            </div>
+                        </div>
+                        <div class="team-card">
+                            <div class="team-card__avatar">
+                                <i class="fa-solid fa-user"></i>
+                            </div>
+                            <div class="team-card__info">
+                                <span class="team-card__role">Anggota</span>
+                                <h4>Ratih Esti Mutiarahati</h4>
+                                <span class="team-card__nim">24/535893/SV/24327</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Ucapan terima kasih -->
+                    <div class="acknowledgement-box">
+                        <div class="acknowledgement-box__icon">
+                            <i class="fa-solid fa-heart"></i>
+                        </div>
+                        <div>
+                            <h4>Ucapan Terima Kasih</h4>
+                            <p>Terima kasih sebesar-besarnya kepada seluruh Dosen Pembimbing, Asisten PKL, serta Bapak Kepala Desa dan jajaran Perangkat Desa Sumberarum yang telah memberikan izin, kerja sama, dan penerimaan yang hangat selama akuisisi data di lapangan.</p>
+                        </div>
+                    </div>
+
+                    <!-- Institusi -->
+                    <div class="institution-card">
+                        <div class="institution-card__logo">
+                            <i class="fa-solid fa-university"></i>
+                        </div>
+                        <div>
+                            <strong>Sistem Informasi Geografis</strong>
+                            <span>Departemen Teknologi Kebumian</span>
+                            <span>Fakultas Sekolah Vokasi</span>
+                            <span>Universitas Gadjah Mada</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- FOOTER -->
+    <footer class="doc-footer">
+        <div class="doc-footer__inner">
+            <div class="doc-footer__brand">
+                <span>Tegalsari <em>2026</em></span>
+                <p>Studio Peta Interaktif · PKL A4 · SIG UGM</p>
+            </div>
+            <div class="doc-footer__links">
+                <a href="index.html"><i class="fa-solid fa-house"></i> Beranda</a>
+                <a href="studio.html" target="_blank"><i class="fa-solid fa-map"></i> Studio Peta</a>
+                <a href="profil-dusun.html" target="_blank"><i class="fa-solid fa-id-card"></i> Profil Dusun</a>
+            </div>
+            <p class="doc-footer__copy">© 2026 PKL A4 · Departemen Teknologi Kebumian, UGM. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Active sidebar link on scroll
+            const sections = document.querySelectorAll('.doc-section');
+            const sidebarLinks = document.querySelectorAll('.sidebar-link');
+            const progressBar = document.getElementById('progressBar');
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        sidebarLinks.forEach(link => {
+                            link.classList.remove('active');
+                            if (link.getAttribute('href').substring(1) === entry.target.id) {
+                                link.classList.add('active');
+                            }
+                        });
+                    }
+                });
+            }, { rootMargin: '-40% 0px -55% 0px' });
+
+            sections.forEach(section => observer.observe(section));
+
+            // Reading progress bar
+            window.addEventListener('scroll', () => {
+                const docLayout = document.querySelector('.doc-layout');
+                const layoutTop = docLayout.offsetTop;
+                const layoutHeight = docLayout.offsetHeight;
+                const scrolled = window.scrollY - layoutTop;
+                const percent = Math.min(100, Math.max(0, (scrolled / layoutHeight) * 100));
+                progressBar.style.height = percent + '%';
+            });
+        });
+    </script>
+
+</body>
+</html>

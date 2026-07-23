@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beranda - Studio Peta Tegalsari</title>
+    <meta name="description" content="Jelajahi Dusun Tegalsari, Sumberarum, Magelang melalui peta interaktif 2D & 3D. Visualisasikan data spasial, analisis demografi, dan lihat potensi wilayah secara modern.">
+    <meta name="keywords" content="peta tegalsari, studio peta, dusun tegalsari, sumberarum, magelang, web gis, pemetaan partisipatif, sig ugm, data spasial">
+    <meta name="google-site-verification" content="BQi9WeuSTPKFq4Drbe3K5Wo4mNg57BEpjbsLbM302eQ" />
+    <meta property="og:title" content="Studio Peta Tegalsari">
+    <meta property="og:description" content="Platform Web GIS untuk eksplorasi data geospasial Dusun Tegalsari, Magelang.">
+    <meta property="og:image" content="https://dusun-tegalsari.web.app/data/logo.jpg">
+    <meta property="og:url" content="https://dusun-tegalsari.web.app/index.html">
+    <meta property="og:type" content="website">
+    <link rel="shortcut icon" href="./data/logo.jpg" type="image/x-icon">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+    <link rel="stylesheet" href="landing-style.css">
+</head>
+
+<body>
+    <div id="page-background"></div>
+
+    <!-- HEADER -->
+    <header class="main-header">
+        <a href="#hero" class="logo">Tegalsari</a>
+        <nav class="main-nav">
+            <a href="#about" class="nav-link">Tentang</a>
+            <a href="#features" class="nav-link">Fitur</a>
+            <a href="#preview" class="nav-link">Profil</a>
+            <a href="#contact" class="nav-link">Kontak</a>
+        </nav>
+        <button class="nav-toggle" aria-label="Buka navigasi">
+            <i class="fas fa-bars"></i>
+        </button>
+    </header>
+
+    <main id="scroll-container">
+
+        <!-- ===== SECTION 1: HERO — Layout baru: teks kiri bawah, kanan kosong ===== -->
+        <section id="hero" class="fullscreen-section">
+            <div class="container hero-container">
+                <div class="hero-left">
+                    <span class="hero-eyebrow">
+                        <i class="fa-solid fa-satellite-dish"></i>
+                        Web GIS · PKL 2026
+                    </span>
+                    <h1 class="hero-title">Peta Interaktif<br><span class="hero-title-accent">Dusun Tegalsari</span></h1>
+                    <p class="hero-subtitle">Eksplorasi data spasial, demografi, dan potensi wilayah Tegalsari secara visual dan modern.</p>
+                    <div class="hero-cta-group">
+                        <a href="studio.html" target="_blank" class="btn btn-primary">
+                            <i class="fa-solid fa-map"></i> Buka Studio Peta
+                        </a>
+                        <a href="#about" class="btn btn-ghost">
+                            Pelajari Lebih Lanjut <i class="fa-solid fa-chevron-down"></i>
+                        </a>
+                    </div>
+                </div>
+                <!-- Floating info card pojok kanan bawah -->
+                <div class="hero-info-card">
+                    <div class="hero-info-card__row">
+                        <i class="fa-solid fa-location-dot"></i>
+                        <span>Sumberarum, Tempuran, Magelang</span>
+                    </div>
+                    <div class="hero-info-card__divider"></div>
+                    <div class="hero-info-card__stats">
+                        <div>
+                            <strong>163</strong>
+                            <small>Persil</small>
+                        </div>
+                        <div>
+                            <strong>21.37 Ha</strong>
+                            <small>Luas</small>
+                        </div>
+                        <div>
+                            <strong>2026</strong>
+                            <small>Data</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 2: TENTANG — Layout baru: badge + 2 kolom + mini stats ===== -->
+        <section id="about" class="fullscreen-section">
+            <div class="container">
+                <div class="about-content-grid">
+                    <div class="about-text-content">
+                        <span class="about-badge">
+                            <i class="fa-solid fa-location-dot"></i>
+                            Tegalsari, Sumberarum, Magelang
+                        </span>
+                        <h2 class="section-title">Platform Pemetaan Web Dusun Tegalsari</h2>
+                        <p class="section-description">
+                            Studio Peta Tegalsari menyajikan informasi spasial dan statistik wilayah Dusun Tegalsari dalam satu platform interaktif yang dirancang untuk mempermudah eksplorasi data, mendukung analisis, serta meningkatkan pemahaman terhadap kondisi wilayah.
+                        </p>
+                        <div class="about-stats-mini">
+                            <div class="about-stat">
+                                <strong>163</strong>
+                                <span>Persil</span>
+                            </div>
+                            <div class="about-stat">
+                                <strong>21.37 Ha</strong>
+                                <span>Luas Wilayah</span>
+                            </div>
+                            <div class="about-stat">
+                                <strong>2026</strong>
+                                <span>Tahun Data</span>
+                            </div>
+                        </div>
+                        <div class="about-buttons">
+                            <a href="profil-dusun.html" class="btn btn-primary">
+                                <i class="fa-solid fa-house"></i> Profil Dusun
+                            </a>
+                            <a href="https://desasumberarum.id/" target="_blank" class="btn btn-secondary">
+                                Profil Desa <i class="fa-solid fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    </div>
+                    <div class="about-map-placeholder">
+                        <div class="about-map-label">
+                            <i class="fa-solid fa-map-location-dot"></i>
+                            Batas Wilayah Dusun Tegalsari
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 3: FITUR — Layout baru: header center atas, grid bawah ===== -->
+        <section id="features" class="fullscreen-section bg-darker">
+            <canvas class="twinkling-lights-canvas"></canvas>
+            <div class="container">
+                <div class="section-content section-content--features">
+                    <div class="features-header">
+                        <span class="features-eyebrow">Kemampuan Studio</span>
+                        <h2 class="section-title">Explore Tegalsari in a New Dimension</h2>
+                        <p class="features-subtitle">
+Jelajahi Dusun Tegalsari melalui platform geospasial interaktif yang menghadirkan data, analisis, dan visualisasi dalam satu pengalaman.                        </p>
+                    </div>
+
+                    <div class="features-interactive-grid">
+                        <div class="features-list">
+                            <div class="feature-item active" data-image-src="./img/image1.png">
+                                <div class="feature-item__icon">
+                                    <i class="fa-solid fa-map"></i>
+                                </div>
+                                <div class="feature-item__text">
+                                    <h3>Peta Interaktif 2D & 3D</h3>
+                                    <p>Eksplorasi wilayah melalui visualisasi peta yang interaktif dan informatif.</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right feature-item__arrow"></i>
+                            </div>
+                            <div class="feature-item" data-image-src="./img/image2.png">
+                                <div class="feature-item__icon">
+                                    <i class="fa-solid fa-layer-group"></i>
+                                </div>
+                                <div class="feature-item__text">
+                                    <h3>Manajemen Layer & Data</h3>
+                                    <p>Kelola layer dan informasi spasial dengan mudah sesuai kebutuhan.</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right feature-item__arrow"></i>
+                            </div>
+                            <div class="feature-item" data-image-src="./img/image3.png">
+                                <div class="feature-item__icon">
+                                    <i class="fa-solid fa-magnifying-glass-chart"></i>
+                                </div>
+                                <div class="feature-item__text">
+                                    <h3>Analisis & Konteks Visual</h3>
+                                    <p>Pahami kondisi wilayah melalui statistik, grafik, dan media pendukung yang terintegrasi.</p>
+                                </div>
+                                <i class="fa-solid fa-chevron-right feature-item__arrow"></i>
+                            </div>
+                        </div>
+
+                        <div class="features-preview">
+                            <div class="features-preview__frame">
+                                <div class="features-preview__bar">
+                                    <span></span><span></span><span></span>
+                                </div>
+                                <img src="./img/image1.png" alt="Pratinjau fitur studio" id="feature-preview-image">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 4: PROFIL DUSUN — Layout baru: gambar kanan, teks kiri ===== -->
+        <section id="preview" class="fullscreen-section bg-darker">
+            <canvas class="twinkling-lights-canvas"></canvas>
+            <div class="container">
+                <div class="section-content">
+                    <div class="profil-dusun-grid">
+                        <!-- Kolom Kiri: Konten Teks -->
+                        <div class="profil-dusun-content">
+                            <span class="profil-eyebrow">
+                                <i class="fa-solid fa-seedling"></i> Desa Sumberarum, Tempuran
+                            </span>
+                            <h2 class="section-title">Dusun Tegalsari</h2>
+                            <p class="profil-dusun-tagline">Discover the Heart of Tegalsari</p>
+                            <p class="section-description">
+                                Dusun Tegalsari merupakan kawasan dengan karakter pedesaan yang didominasi lahan pertanian dan permukiman. Melalui Studio Peta Tegalsari, informasi mengenai wilayah, kependudukan, serta potensi lokal disajikan secara interaktif untuk mendukung eksplorasi dan pemahaman yang lebih menyeluruh.
+                            </p>
+
+                            <!-- Stats: 2 baris -->
+                            <div class="profil-dusun-stats">
+                                <div class="stat-item">
+                                    <span class="stat-number">163</span>
+                                    <p class="stat-label">Persil</p>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">21.37<small> Ha</small></span>
+                                    <p class="stat-label">Luas Wilayah</p>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">Swasta</span>
+                                    <p class="stat-label">Pekerjaan Dominan</p>
+                                </div>
+                                <div class="stat-item">
+                                    <span class="stat-number">Pertanian</span>
+                                    <p class="stat-label">Potensi Utama</p>
+                                </div>
+                            </div>
+
+                            <div class="profil-dusun-buttons">
+                                <a href="./source/media/album_peta_tegalsari_2026.pdf" class="btn btn-primary" download>
+                                    <i class="fa-solid fa-download"></i> Unduh Album Peta
+                                </a>
+                                <a href="profil-dusun.html" target="_blank" rel="noopener noreferrer" class="btn btn-secondary">
+                                    Lihat Selengkapnya <i class="fa-solid fa-arrow-right"></i>
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Kolom Kanan: Gambar -->
+                        <div class="profil-dusun-image-wrapper">
+                            <img src="https://images.weserv.nl/?url=https://api.ona.io/api/v1/files/45949561?filename=tegalsari/attachments/854525_Form_Survei_PKL_2_Wawancara_DUSUNN/1752638874146.jpg&w=1080&q=75&output=jpg"
+                                alt="Pemandangan Dusun Tegalsari">
+                            <div class="profil-dusun-image-tag">
+                                <i class="fa-solid fa-camera"></i> Dusun Tegalsari, 2026
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== SECTION 5: KONTAK — Layout baru: 2 kolom, kiri info, kanan link ===== -->
+        <section id="contact" class="fullscreen-section bg-darker">
+            <canvas class="twinkling-lights-canvas"></canvas>
+            <div class="container">
+                <div class="contact-grid">
+                    <!-- Kiri: Branding -->
+                    <div class="contact-brand">
+                        <div class="contact-logo">Tegalsari <span>2026</span></div>
+                        <p class="contact-tagline">
+                            Platform Web GIS untuk eksplorasi data geospasial Dusun Tegalsari,
+                            Desa Sumberarum, Kecamatan Tempuran, Kabupaten Magelang.
+                        </p>
+                        <div class="contact-affiliation">
+                            <i class="fa-solid fa-university"></i>
+                            <div>
+                                <strong>Sistem Informasi Geografis</strong>
+                                <span>Departemen Teknologi Kebumian</span>
+                                <span>Universitas Gadjah Mada</span>
+                            </div>
+                        </div>
+                        <div class="social-links">
+                            <a href="https://www.instagram.com/sig24ugm/" target="_blank" aria-label="Instagram">
+                                <i class="fab fa-instagram"></i>
+                            </a>
+                            <a href="https://www.tiktok.com/@sig24ugm" target="_blank" aria-label="Tiktok"><i class="fab fa-tiktok"></i></a>
+                            <a href="https://www.youtube.com/@sigugm" target="_blank" aria-label="YouTube"><i class="fab fa-youtube"></i></a>
+                        </div>
+                    </div>
+
+                    <!-- Kanan: Link columns -->
+                    <div class="contact-links">
+                        <div class="footer-column">
+                            <h3>Tautan Cepat</h3>
+                            <ul>
+                                <li><a href="#about">Tentang Proyek</a></li>
+                                <li><a href="studio.html" target="_blank">Studio Peta</a></li>
+                                <li><a href="profil-dusun.html" target="_blank">Profil Dusun</a></li>
+                                <li><a href="https://desasumberarum.id/" target="_blank">Profil Desa</a></li>
+                            </ul>
+                        </div>
+                        <div class="footer-column">
+                            <h3>Sumber Daya</h3>
+                            <ul>
+                                <li><a href="dokumentasi.html" target="_blank">Dokumentasi</a></li>
+                                <li><a href="https://maplibre.org/" target="_blank">MapLibre</a></li>
+                                <li><a href="./source/media/album_peta.pdf" download>Album Peta</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="contact-footer-bar">
+                    <span>© 2026 PKL A4 · Tegalsari WebGIS. All Rights Reserved.</span>
+                    <span class="hide-on-mobile">Dibuat dengan <i class="fa-solid fa-heart" style="color:var(--rose)"></i> untuk Dusun Tegalsari</span>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- NAVIGASI PANAH -->
+    <div id="section-nav-arrows">
+        <a href="#" id="arrow-up" class="nav-arrow hidden" aria-label="Go to previous section">
+            <i class="fa-solid fa-chevron-up"></i>
+        </a>
+        <a href="#" id="arrow-down" class="nav-arrow" aria-label="Go to next section">
+            <i class="fa-solid fa-chevron-down"></i>
+        </a>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+
+            // Nav toggle
+            const navToggle = document.querySelector('.nav-toggle');
+            const mainNav = document.querySelector('.main-nav');
+            const navLinks = document.querySelectorAll('.nav-link');
+            navToggle.addEventListener('click', () => {
+                mainNav.classList.toggle('is-open');
+                const icon = navToggle.querySelector('i');
+                icon.classList.toggle('fa-bars');
+                icon.classList.toggle('fa-times');
+            });
+            navLinks.forEach(link => {
+                link.addEventListener('click', () => {
+                    if (mainNav.classList.contains('is-open')) {
+                        mainNav.classList.remove('is-open');
+                        const icon = navToggle.querySelector('i');
+                        icon.classList.add('fa-bars');
+                        icon.classList.remove('fa-times');
+                    }
+                });
+            });
+
+            // Twinkling lights canvas
+            const canvases = document.querySelectorAll('.twinkling-lights-canvas');
+            canvases.forEach(canvas => {
+                const ctx = canvas.getContext('2d');
+                let lights = [];
+                const numLights = 80;
+                function resizeCanvas() { canvas.width = canvas.offsetWidth; canvas.height = canvas.offsetHeight; }
+                function Light() { this.x = Math.random() * canvas.width; this.y = Math.random() * canvas.height; this.size = Math.random() * 1.5 + 0.5; this.opacity = Math.random() * 0.5 + 0.2; this.twinkleSpeed = (Math.random() - 0.5) * 0.015; }
+                Light.prototype.update = function () { this.opacity += this.twinkleSpeed; if (this.opacity <= 0.1 || this.opacity >= 1) { this.twinkleSpeed *= -1; } };
+                Light.prototype.draw = function () { ctx.beginPath(); ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2); ctx.fillStyle = `rgba(200, 220, 180, ${this.opacity})`; ctx.fill(); };
+                function createLights() { lights = []; for (let i = 0; i < numLights; i++) { lights.push(new Light()); } }
+                function animate() { ctx.clearRect(0, 0, canvas.width, canvas.height); for (const light of lights) { light.update(); light.draw(); } requestAnimationFrame(animate); }
+                resizeCanvas(); createLights(); animate();
+                window.addEventListener('resize', () => { resizeCanvas(); createLights(); });
+            });
+
+            // Section nav arrows
+            const sections = document.querySelectorAll('.fullscreen-section');
+            const arrowUp = document.getElementById('arrow-up');
+            const arrowDown = document.getElementById('arrow-down');
+            function smoothScrollTo(targetId) { document.querySelector(targetId)?.scrollIntoView({ behavior: 'smooth', block: 'start' }); }
+            arrowUp.addEventListener('click', (e) => { e.preventDefault(); smoothScrollTo(e.currentTarget.getAttribute('href')); });
+            arrowDown.addEventListener('click', (e) => { e.preventDefault(); smoothScrollTo(e.currentTarget.getAttribute('href')); });
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const currentIndex = Array.from(sections).findIndex(sec => sec.id === entry.target.id);
+                        arrowUp.classList.toggle('hidden', currentIndex === 0);
+                        if (currentIndex > 0) arrowUp.href = `#${sections[currentIndex - 1].id}`;
+                        arrowDown.classList.toggle('hidden', currentIndex === sections.length - 1);
+                        if (currentIndex < sections.length - 1) arrowDown.href = `#${sections[currentIndex + 1].id}`;
+                    }
+                });
+            }, { threshold: 0.7 });
+            sections.forEach(section => observer.observe(section));
+
+            // Feature items interaktif
+            const featureItems = document.querySelectorAll('.feature-item');
+            const mockupImage = document.getElementById('feature-preview-image');
+            if (featureItems.length > 0 && mockupImage) {
+                featureItems.forEach(item => {
+                    item.addEventListener('click', () => {
+                        featureItems.forEach(i => i.classList.remove('active'));
+                        item.classList.add('active');
+                        const newImageSrc = item.getAttribute('data-image-src');
+                        mockupImage.style.opacity = '0';
+                        setTimeout(() => { mockupImage.src = newImageSrc; mockupImage.style.opacity = '1'; }, 300);
+                    });
+                });
+            }
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Profil Dusun Tegalsari - Studio Peta Tegalsari</title>
+    <meta name="description" content="Kenali lebih dalam Dusun Tegalsari melalui sejarah, visi & misi, struktur perangkat, galeri foto, dan peta lokasi.">
+    <meta name="keywords" content="Dusun Tegalsari, Sumberarum, Magelang, profil dusun, sejarah, visi, misi">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.css" rel="stylesheet">
+    <link rel="stylesheet" href="profil_dusun.css">
+    <link rel="shortcut icon" href="./data/logo.png" type="image/x-icon">
+</head>
+
+<body>
+
+    <!-- ===== HEADER ===== -->
+    <header class="page-header">
+        <div class="container">
+            <a href="index.html" class="back-link">
+                <i class="fa-solid fa-chevron-left"></i>
+                <span>Beranda</span>
+            </a>
+            <div class="logo-title">Tegalsari <span class="logo-badge">2026</span></div>
+            <a href="studio.html" target="_blank" class="header-cta">
+                <i class="fa-solid fa-map"></i> Studio Peta
+            </a>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- ===== HERO — Full bleed dengan overlay teks kiri bawah ===== -->
+        <section class="hero-profil" style="background-image: url('./img/bg-dusun.jpg');">
+            <div class="hero-overlay"></div>
+
+            <!-- Konten utama hero: pojok kiri bawah -->
+            <div class="hero-content container">
+                <div class="hero-breadcrumb">
+                    <span>Jawa Tengah</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Magelang</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Tempuran</span>
+                    <i class="fa-solid fa-chevron-right"></i>
+                    <span>Sumberarum</span>
+                </div>
+                <h1 class="hero-title">Dusun<br><span>Tegalsari</span></h1>
+                <p class="hero-tagline">Di antara hijaunya sawah dan hangatnya kebersamaan warga.</p>
+
+                <!-- Stat pills di bawah judul -->
+                <div class="hero-stat-pills">
+                    <div class="stat-pill">
+                        <i class="fa-solid fa-map-pin"></i>
+                        <span>Sumberarum, Tempuran</span>
+                    </div>
+                    <div class="stat-pill">
+                        <i class="fa-solid fa-ruler-combined"></i>
+                        <span>21.37 Ha</span>
+                    </div>
+                    <div class="stat-pill">
+                        <i class="fa-solid fa-house"></i>
+                        <span>163 Persil</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Scroll indicator -->
+            <div class="hero-scroll-hint">
+                <i class="fa-solid fa-chevron-down"></i>
+            </div>
+        </section>
+
+        <!-- ===== SEJARAH — Layout: teks full lebar atas, video + facts card bawah ===== -->
+        <section id="sejarah" class="content-section">
+            <div class="container">
+                <div class="section-label">
+                    <span class="label-line"></span>
+                    <span>01 / Sejarah</span>
+                </div>
+                <div class="sejarah-grid">
+                    <!-- Kiri: Video -->
+                    <div class="video-container">
+                        <iframe
+    src="https://drive.google.com/file/d/13u2MFvdr9liGAAs1_OTuSbZQv-bIyzop/preview"
+    title="Video Dusun Tegalsari"
+    width="100%"
+    height="500"
+    frameborder="0"
+    allow="autoplay"
+    allowfullscreen>
+</iframe>
+                    </div>
+                    <!-- Kanan: Teks + facts -->
+                    <div class="sejarah-text">
+                        <h2 class="section-title">The Story Behind Tegalsari</h2>
+                        <p>Nama <strong>"Tegalsari"</strong> berasal dari kata <em>Tegal</em> (ladang/sawah) dan <em>Sari</em> (inti/keindahan) yang bermakna inti atau keindahan. Filosofi tersebut mencerminkan kesuburan alam, kehidupan agraris, serta semangat kebersamaan yang telah diwariskan dari generasi ke generasi.</p>
+                        <p>Hingga kini, nilai gotong royong, kearifan lokal, dan hubungan harmonis dengan alam tetap menjadi bagian penting dalam kehidupan masyarakat Tegalsari.</p>
+
+                        <div class="sejarah-facts">
+                            <div class="fact-item">
+                                <i class="fa-solid fa-seedling"></i>
+                                <div>
+                                    <strong>Agraris</strong>
+                                    <span>Basis ekonomi utama warga</span>
+                                </div>
+                            </div>
+                            <div class="fact-item">
+                                <i class="fa-solid fa-people-group"></i>
+                                <div>
+                                    <strong>Gotong Royong</strong>
+                                    <span>Tradisi yang masih terjaga</span>
+                                </div>
+                            </div>
+                            <div class="fact-item">
+                                <i class="fa-solid fa-landmark"></i>
+                                <div>
+                                    <strong>Kearifan Lokal</strong>
+                                    <span>Nilai budaya dilestarikan</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STATISTIK — Full width banner dengan angka besar ===== -->
+        <section class="stats-banner">
+            <div class="container">
+                <div class="stats-banner-grid">
+                    <div class="stats-banner-item">
+                        <span class="stats-number">163</span>
+                        <span class="stats-label">Persil / Kavling</span>
+                    </div>
+                    <div class="stats-divider"></div>
+                    <div class="stats-banner-item">
+                        <span class="stats-number">21.37</span>
+                        <span class="stats-label">Hektare Luas Wilayah</span>
+                    </div>
+                    <div class="stats-divider"></div>
+                    <div class="stats-banner-item">
+                        <span class="stats-number">1</span>
+                        <span class="stats-label">RW Wilayah</span>
+                    </div>
+                    <div class="stats-divider"></div>
+                    <div class="stats-banner-item">
+                        <span class="stats-number">2026</span>
+                        <span class="stats-label">Tahun Pendataan</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== VISI & MISI — Layout baru: satu kolom judul besar, bawahnya 2 card ===== -->
+        <section id="visi-misi" class="content-section bg-surface">
+            <div class="container">
+                <div class="section-label">
+                    <span class="label-line"></span>
+                    <span>02 / Visi & Misi</span>
+                </div>
+                <h2 class="section-title visi-misi-title">Arah dan Tujuan<br>Dusun Tegalsari</h2>
+
+                <div class="visi-misi-grid">
+                    <!-- VISI: Card besar dengan background accent -->
+                    <div class="card card--visi">
+                        <div class="card-number">01</div>
+                        <div class="card-icon"><i class="fa-solid fa-eye"></i></div>
+                        <h3>Visi</h3>
+                        <p class="visi-text">"Mewujudkan Dusun Tegalsari yang Maju, Sejahtera, dan Berbudaya Berlandaskan Semangat Gotong Royong."</p>
+                    </div>
+
+                    <!-- MISI: Card dengan list item bergaya -->
+                    <div class="card card--misi">
+                        <div class="card-number">02</div>
+                        <div class="card-icon"><i class="fa-solid fa-bullseye"></i></div>
+                        <h3>Misi</h3>
+                        <ul>
+                            <li>Meningkatkan kualitas SDM melalui pendidikan dan pelatihan.</li>
+                            <li>Mengoptimalkan potensi pertanian dan agriwisata sebagai pilar ekonomi.</li>
+                            <li>Melestarikan nilai-nilai budaya dan kearifan lokal.</li>
+                            <li>Memperkuat infrastruktur dasar untuk mendukung aktivitas warga.</li>
+                            <li>Mendorong partisipasi aktif masyarakat dalam program pembangunan.</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== STRUKTUR — Layout baru: horizontal timeline / card besar ===== -->
+        <section id="struktur" class="content-section">
+            <div class="container">
+                <div class="section-label">
+                    <span class="label-line"></span>
+                    <span>03 / Perangkat Dusun</span>
+                </div>
+                <h2 class="section-title">Struktur Perangkat Dusun</h2>
+
+                <div class="struktur-grid">
+                    <div class="profile-card">
+                        <div class="profile-card__rank">Kepala Desa</div>
+                        <div class="profile-image">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <h4>Muhzen Fanani, S.H.</h4>
+                        <p class="jabatan">Kepala Desa Sumberarum</p>
+                        <div class="profile-card__tag">
+                            <i class="fa-solid fa-building-columns"></i> Desa Sumberarum
+                        </div>
+                    </div>
+
+                    <div class="profile-card profile-card--featured">
+                        <div class="profile-card__rank">Kepala Dusun</div>
+                        <div class="profile-image">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <h4>Denny Zusman</h4>
+                        <p class="jabatan">Kepala Dusun Tegalsari</p>
+                        <div class="profile-card__tag">
+                            <i class="fa-solid fa-map-pin"></i> Dusun Tegalsari
+                        </div>
+                    </div>
+
+                    <div class="profile-card">
+                        <div class="profile-card__rank">Ketua RW</div>
+                        <div class="profile-image">
+                            <i class="fa-solid fa-user"></i>
+                        </div>
+                        <h4>A . Choirudin</h4>
+                        <p class="jabatan">Ketua RW Dusun Tegalsari</p>
+                        <div class="profile-card__tag">
+                            <i class="fa-solid fa-users"></i> RW Tegalsari
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== GALERI — Layout baru: masonry-style grid asimetris ===== -->
+        <section id="galeri" class="content-section bg-surface">
+            <div class="container">
+                <div class="section-label">
+                    <span class="label-line"></span>
+                    <span>04 / Galeri</span>
+                </div>
+                <div class="galeri-header">
+                    <h2 class="section-title">Potret Dusun Tegalsari</h2>
+                    <p class="galeri-sub">Rekaman visual kehidupan dan lingkungan Dusun Tegalsari, 2026.</p>
+                </div>
+
+                <!-- Grid asimetris: gambar 1 besar kiri, 2x2 kanan -->
+                <div class="gallery-masonry">
+                    <div class="gallery-item gallery-item--big">
+                        <img src="https://images.weserv.nl/?url=https://api.ona.io/api/v1/files/45949561?filename=tegalsari/attachments/854525_Form_Survei_PKL_2_Wawancara_DUSUNN/1752638874146.jpg&w=1080&q=75&output=jpg" alt="Dusun Tegalsari">
+                        <div class="gallery-item__overlay">
+                            <i class="fa-solid fa-expand"></i>
+                        </div>
+                    </div>
+                    <div class="gallery-right">
+                        <div class="gallery-item">
+                            <img src="https://images.weserv.nl/?url=https://api.ona.io/api/v1/files/45933830?filename=tegalsari/attachments/854561_Form_Survei_PKL_2_Cek_Kesesuian_PL_1_DUSUNN/1752570086185.jpg&w=1080&q=75&output=jpg" alt="Galeri 1">
+                            <div class="gallery-item__overlay"><i class="fa-solid fa-expand"></i></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.weserv.nl/?url=https://api.ona.io/api/v1/files/45946949?filename=tegalsari/attachments/854561_Form_Survei_PKL_2_Cek_Kesesuian_PL_1_DUSUNN/1752632550911.jpg&w=1080&q=75&output=jpg" alt="Galeri 2">
+                            <div class="gallery-item__overlay"><i class="fa-solid fa-expand"></i></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.weserv.nl/?url=https://api.ona.io/api/v1/files/45946953?filename=tegalsari/attachments/854561_Form_Survei_PKL_2_Cek_Kesesuian_PL_1_DUSUNN/1752633154026.jpg&w=1080&q=75&output=jpg" alt="Galeri 3">
+                            <div class="gallery-item__overlay"><i class="fa-solid fa-expand"></i></div>
+                        </div>
+                        <div class="gallery-item">
+                            <img src="https://images.weserv.nl/?url=https://api.ona.io/api/v1/files/45933792?filename=tegalsari/attachments/854561_Form_Survei_PKL_2_Cek_Kesesuian_PL_1_DUSUNN/1752567399184.jpg&w=1080&q=75&output=jpg" alt="Galeri 4">
+                            <div class="gallery-item__overlay"><i class="fa-solid fa-expand"></i></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ===== PETA LOKASI — Layout baru: full width dengan info card overlay ===== -->
+        <section id="peta" class="content-section peta-section">
+            <div class="container">
+                <div class="section-label">
+                    <span class="label-line"></span>
+                    <span>05 / Lokasi</span>
+                </div>
+                <h2 class="section-title">Lokasi Dusun Tegalsari</h2>
+            </div>
+
+            <!-- Peta full width dengan card overlay -->
+            <div class="map-wrapper">
+                <div class="map-container">
+                    <div id="map"></div>
+                </div>
+                <!-- Info card melayang di atas peta -->
+                <div class="map-info-card">
+                    <div class="map-info-card__title">
+                        <i class="fa-solid fa-location-dot"></i>
+                        Dusun Tegalsari
+                    </div>
+                    <div class="map-info-card__rows">
+                        <div class="map-info-row">
+                            <span class="map-info-label">Desa</span>
+                            <span class="map-info-value">Sumberarum</span>
+                        </div>
+                        <div class="map-info-row">
+                            <span class="map-info-label">Kecamatan</span>
+                            <span class="map-info-value">Tempuran</span>
+                        </div>
+                        <div class="map-info-row">
+                            <span class="map-info-label">Kabupaten</span>
+                            <span class="map-info-value">Magelang</span>
+                        </div>
+                        <div class="map-info-row">
+                            <span class="map-info-label">Luas</span>
+                            <span class="map-info-value">21.37 Ha</span>
+                        </div>
+                        <div class="map-info-row">
+                            <span class="map-info-label">Koordinat</span>
+                            <span class="map-info-value">7°33′S 110°10′E</span>
+                        </div>
+                    </div>
+                    <a href="studio.html" target="_blank" class="map-info-card__btn">
+                        <i class="fa-solid fa-up-right-from-square"></i> Buka Studio Peta
+                    </a>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="page-footer">
+        <div class="container footer-inner">
+            <div class="footer-brand">
+                <span class="footer-logo">Tegalsari <em>2026</em></span>
+                <p>Platform Web GIS Dusun Tegalsari, Sumberarum, Magelang.</p>
+            </div>
+            <div class="footer-links">
+                <a href="index.html"><i class="fa-solid fa-house"></i> Beranda</a>
+                <a href="studio.html" target="_blank"><i class="fa-solid fa-map"></i> Studio Peta</a>
+                <a href="dokumentasi.html" target="_blank"><i class="fa-solid fa-book"></i> Dokumentasi</a>
+            </div>
+            <p class="footer-copy">© 2026 PKL A4 · Departemen Teknologi Kebumian, UGM</p>
+        </div>
+    </footer>
+
+    <script src="https://unpkg.com/maplibre-gl@5.6.2/dist/maplibre-gl.js"></script>
+    <script>
+        const map = new maplibregl.Map({
+            container: 'map',
+            style: {
+                version: 8,
+                sources: {
+                    'esri-satellite': {
+                        type: 'raster',
+                        tiles: ['https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}'],
+                        tileSize: 256,
+                        attribution: 'Tiles © Esri'
+                    }
+                },
+                layers: [{ id: 'satellite-layer', type: 'raster', source: 'esri-satellite' }]
+            },
+            center: [110.174, -7.551],
+            zoom: 15,
+            pitch: 45,
+            bearing: -20,
+            interactive: true,
+            attributionControl: false
+        });
+        map.on('load', () => {
+            // Batas dusun — GeoJSON lokal. Taruh file-nya di ./source/data/administrasi_tegalsari.geojson
+            // (file yang sama dipakai juga oleh Studio Peta).
+            map.addSource('dusun-boundary-source', {
+                type: 'geojson',
+                data: './source/data/administrasi_tegalsari.geojson'
+            });
+            map.addLayer({
+                'id': 'dusun-fill-layer',
+                'type': 'fill',
+                'source': 'dusun-boundary-source',
+                'paint': { 'fill-color': '#5a6b47', 'fill-opacity': 0.3 }
+            });
+            map.addLayer({
+                'id': 'dusun-outline-layer',
+                'type': 'line',
+                'source': 'dusun-boundary-source',
+                'paint': { 'line-color': '#b5737a', 'line-width': 3 }
+            });
+        });
+    </script>
+
+</body>
+</html>

@@ -1255,3 +1255,117 @@ p.chart-subtitle { font-size:12px; color:var(--text-muted); margin-bottom:1.2rem
 
 /* Accessibility */
 a:focus-visible,button:focus-visible,input:focus-visible,select:focus-visible,.nav-item:focus-visible { outline:2px solid var(--rose); outline-offset:2px; }
+
+/* ============================================================
+   RESPONSIVE — MOBILE / TABLET
+   Sebelumnya studio.html cuma didesain buat layar desktop (grid 3 kolom
+   dengan lebar sidebar tetap 240px/320px + intro-split 460px tetap),
+   jadi di HP semuanya numpuk/kepotong. Blok ini menata ulang jadi:
+   - Peta selalu full-width, kedua sidebar jadi drawer overlay (slide in/out)
+   - Header dirapikan biar gak kepotong
+   - Intro screen ditumpuk vertikal, bukan 2 kolom
+   ============================================================ */
+@media (max-width: 900px) {
+
+    /* ---------- INTRO SCREEN (sebelum "Mulai Eksplorasi") ---------- */
+    .intro-split {
+        grid-template-columns: 1fr;
+        grid-template-rows: auto 1fr;
+    }
+    .intro-panel {
+        border-right: none;
+        border-bottom: 3px solid var(--olive);
+        max-height: 62vh;
+        overflow-y: auto;
+    }
+    .intro-panel__header { padding: 1.2rem 1.4rem 0.8rem; }
+    .intro-panel__body { padding: 1.4rem; }
+    .intro-title { font-size: clamp(2rem, 8vw, 2.8rem); }
+
+    /* ---------- DASHBOARD STUDIO (setelah "Mulai Eksplorasi") ---------- */
+    :root { --sidebar-left-width: 240px; --sidebar-right-width: 320px; }
+
+    #app-container,
+    #app-container.left-collapsed,
+    #app-container.right-collapsed,
+    #app-container.both-collapsed {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "header"
+            "main";
+    }
+
+    /* Kedua sidebar jadi drawer overlay full-height di atas peta, bukan kolom grid */
+    .sidebar-left, .sidebar-right {
+        position: fixed;
+        top: var(--header-height);
+        bottom: var(--statusbar-height);
+        z-index: 700;
+        transition: transform var(--transition) ease-in-out;
+        box-shadow: 0 0 32px rgba(0,0,0,0.45);
+    }
+    .sidebar-left {
+        left: 0;
+        width: min(80vw, 260px);
+        transform: translateX(-100%);
+    }
+    .sidebar-right {
+        right: 0;
+        width: min(92vw, 360px);
+        transform: translateX(100%);
+    }
+    /* Default (tanpa class collapsed) = drawer tertutup di HP; class collapsed dipakai kebalikannya */
+    #app-container:not(.left-collapsed) .sidebar-left { transform: translateX(0); }
+    #app-container:not(.right-collapsed) .sidebar-right { transform: translateX(0); }
+    #app-container.left-collapsed .sidebar-left { transform: translateX(-100%); }
+    #app-container.right-collapsed .sidebar-right { transform: translateX(100%); }
+
+    #map-section { grid-area: main; width: 100%; }
+
+    /* Tombol toggle kiri: z-index lebih tinggi dari drawer + ikut geser ke tepi drawer saat terbuka,
+       supaya selalu keliatan & tetap bisa dipakai buat nutup drawer-nya lagi */
+    .sidebar-toggle-btn.left-toggle {
+        z-index: 750;
+        top: 50%;
+        left: 12px;
+    }
+    #app-container:not(.left-collapsed) .sidebar-toggle-btn.left-toggle {
+        left: min(80vw, 260px);
+        margin-left: -14px;
+    }
+
+    /* ---------- HEADER — dirapikan biar gak kepotong ---------- */
+    .main-header {
+        grid-template-columns: auto 1fr auto;
+    }
+    .header-left { padding: 0 0.7rem; gap: 0.4rem; }
+    .app-title { font-size: 11.5px; }
+    .header-center { display: none; } /* koordinat live disembunyikan, sudah ada juga di status bar */
+    .header-right { padding: 0 0.6rem; gap: 0.5rem; }
+    .header-button span { display: none; } /* ikon aja, teks disembunyikan biar hemat tempat */
+    .header-button { padding: 8px 10px; }
+    .header-nav { gap: 0; }
+    .nav-link { padding: 6px 8px; font-size: 10.5px; }
+    .nav-link span, .nav-link i.fa-arrow-up-right-from-square { display: none; }
+
+    /* ---------- STATUS BAR — scroll horizontal drpd numpuk ---------- */
+    .app-status-bar {
+        overflow-x: auto;
+        justify-content: flex-start;
+        gap: 0.6rem;
+        -webkit-overflow-scrolling: touch;
+    }
+    .app-status-bar::-webkit-scrollbar { display: none; }
+    .status-bar__left, .status-bar__right { flex-shrink: 0; }
+
+    /* ---------- Kontrol peta — sedikit dikecilkan ---------- */
+    .map-controls-bottom-right { bottom: 40px; right: 10px; }
+    .map-controls-top-right { top: 10px; right: 10px; }
+}
+
+@media (max-width: 480px) {
+    .intro-title { font-size: 1.8rem; }
+    .sidebar-right { width: 100vw; }
+    .sidebar-left { width: 78vw; }
+    .header-nav .nav-link:nth-child(3) { display: none; } /* "Docs" disembunyikan di layar sangat sempit */
+}

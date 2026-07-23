@@ -6,8 +6,12 @@ document.addEventListener('DOMContentLoaded', function () {
     // perkebunan, batas-rt, dst).
 
     // ===== BASEMAP — semua via MapLibre, tanpa style Mapbox =====
+    // 'glyphs' wajib ada supaya layer teks (mis. label toponim Sapras) bisa dirender —
+    // ini endpoint font publik gratis dari OpenMapTiles, bukan spesifik Mapbox.
+    const PUBLIC_GLYPHS_URL = 'https://fonts.openmaptiles.org/{fontstack}/{range}.pbf';
     const ESRI_SATELLITE_STYLE = {
         version: 8,
+        glyphs: PUBLIC_GLYPHS_URL,
         sources: {
             'esri-satellite': {
                 type: 'raster',
@@ -23,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function () {
         'streets-v12': 'https://basemaps.cartocdn.com/gl/voyager-gl-style/style.json',
         'outdoors-v12': {
             version: 8,
+            glyphs: PUBLIC_GLYPHS_URL,
             sources: {
                 'opentopo': {
                     type: 'raster',
@@ -83,7 +88,13 @@ document.addEventListener('DOMContentLoaded', function () {
     'Transportasi':                   { type: 'fill', color: '#6b6b6b' },
     'Semak Belukar':                  { type: 'fill', color: '#9fb26a' }
 } },
-'bangunan': { type: 'geojson', sourceId: 'bangunan-source', geojsonUrl: './source/data/bangunan_tegalsari.geojson', layerId: 'bangunan-layer', legendTitle: 'Bangunan', items: { 'Area Bangunan': { type: 'fill-outline', color: '#E67E22' } } },        'jalan': { type: 'geojson', sourceId: 'jalan-source', geojsonUrl: './source/data/jalan_tegalsari.geojson', layerId: 'jalan-layer', legendTitle: 'Jalan', property: 'KETERANGAN', items: { 'Jalan Lokal': { type: 'line', color: '#E65100', width: 2.5 }, 'Jalan Setapak': { type: 'line', color: '#FB8C00', width: 2 } } },
+'bangunan': { type: 'geojson', sourceId: 'bangunan-source', geojsonUrl: './source/data/bangunan_tegalsari.geojson', layerId: 'bangunan-layer', legendTitle: 'Bangunan', items: { 'Area Bangunan': { type: 'fill-outline', color: '#E67E22' } } },
+        // Jalan — atribut asli hasil survei: Toponim (nama jalan, bisa kosong), Sub_Unsur/Kelas (kode unsur RBI), Shape_Leng (panjang meter).
+        // Satu kelas jalan saja di data saat ini, jadi ditampilkan seragam (bukan per-kategori).
+        'jalan': { type: 'geojson', sourceId: 'jalan-source', geojsonUrl: './source/data/jalan_tegalsari.geojson', layerId: 'jalan-layer', legendTitle: 'Jalan', items: { 'Jaringan Jalan': { type: 'line', color: '#E65100', width: 3 } } },
+        // Sapras (sarana & prasarana) — titik hasil survei dengan atribut Toponim (nama fasilitas, bisa kosong).
+        // Ikon + label nama toponim-nya ikut nempel ke toggle "Label Peta" yang sudah ada (lihat wiring di initializeControls/basemapLabelToggle).
+        'sapras': { type: 'geojson', sourceId: 'sapras-source', geojsonUrl: './source/data/sapras_tegalsari.geojson', layerId: 'sapras-layer', labelLayerId: 'sapras-label-layer' },
 'orientasi-bangunan': {
     type: 'geojson',
     sourceId: 'orientasi-bangunan-source',
@@ -143,54 +154,131 @@ document.addEventListener('DOMContentLoaded', function () {
     const map = new maplibregl.Map({ container: 'map', projection: 'mercator', style: ESRI_SATELLITE_STYLE, ...finalLocation, antialias: true, attributionControl: false, preserveDrawingBuffer: true });
     window._map = map; // expose untuk script tambahan (koordinat live, dsb.)
 
-    function addCustomDataLayers() {
-    const plConfig = MAP_CONFIG['penggunaan-lahan'];
-    if (plConfig.geojsonUrl && !map.getSource(plConfig.sourceId)) { map.addSource(plConfig.sourceId, { type: 'geojson', data: plConfig.geojsonUrl }); }
-    if (map.getSource(plConfig.sourceId) && !map.getLayer(plConfig.layerId)) {
-        map.addLayer({ id: plConfig.layerId, type: 'fill', source: plConfig.sourceId, layout: { visibility: 'none' }, paint: { 'fill-color': ['match', ['get', plConfig.property], ...Object.entries(plConfig.items).flatMap(([k, v]) => [k, v.color]), '#ccc'], 'fill-opacity': 0.75 } });
-        map.addLayer({ id: plConfig.layerId + '-outline', type: 'line', source: plConfig.sourceId, layout: { visibility: 'none' }, paint: { 'line-color': '#000', 'line-width': 0.5, 'line-opacity': 0.5 } });
-    }
+    // ===== Deteksi otomatis kalau ada file GeoJSON kita yang gagal dimuat (404/path salah) =====
+    // Tanpa ini, error fetch geojson cuma numpuk diam-diam di console tanpa penjelasan.
+    // Sekarang kalau ada yang gagal, langsung ada pesan jelas: source mana + kemungkinan penyebabnya.
+    (function setupSourceLoadDiagnostics() {
+        const ourSourceIds = new Set(Object.values(MAP_CONFIG).map(c => c.sourceId).filter(Boolean));
+        const warnedIds = new Set();
+        map.on('error', (e) => {
+            const sourceId = e.sourceId || (e.source && e.source.id);
+            if (sourceId && ourSourceIds.has(sourceId) && !warnedIds.has(sourceId)) {
+                warnedIds.add(sourceId);
+                const cfgEntry = Object.entries(MAP_CONFIG).find(([, c]) => c.sourceId === sourceId);
+                const geojsonUrl = cfgEntry ? cfgEntry[1].geojsonUrl : '(tidak diketahui)';
+                console.error(
+                    `%c[Data GeoJSON gagal dimuat] "${sourceId}"`,
+                    'color:#c0392b;font-weight:bold;',
+                    `\nFile yang dicari: ${geojsonUrl}` +
+                    `\nKemungkinan penyebab: file belum diupload ke server, salah nama/path, atau typo.` +
+                    `\nCek tab Network di DevTools (F12) — cari request ke file ini, lihat status-nya 404 atau bukan.`
+                );
+            }
+        });
+    })();
 
-    
+    function addCustomDataLayers() {
+    // Setiap blok layer dibungkus try/catch sendiri-sendiri — supaya kalau SATU layer gagal
+    // (misal file geojson-nya belum ada / typo path), layer-layer lain tetap terpasang normal.
+    // Ini yang bikin dulu "batas admin & penggunaan lahan ikut hilang" tiap ganti basemap:
+    // begitu satu addLayer error, sisa fungsi berhenti total dan layer setelahnya gak pernah nempel.
+    const safeAdd = (label, fn) => { try { fn(); } catch (err) { console.error(`[addCustomDataLayers] gagal pasang layer "${label}":`, err); } };
+
+    const plConfig = MAP_CONFIG['penggunaan-lahan'];
+    safeAdd('penggunaan-lahan', () => {
+        if (plConfig.geojsonUrl && !map.getSource(plConfig.sourceId)) { map.addSource(plConfig.sourceId, { type: 'geojson', data: plConfig.geojsonUrl }); }
+        if (map.getSource(plConfig.sourceId) && !map.getLayer(plConfig.layerId)) {
+            map.addLayer({ id: plConfig.layerId, type: 'fill', source: plConfig.sourceId, layout: { visibility: 'none' }, paint: { 'fill-color': ['match', ['get', plConfig.property], ...Object.entries(plConfig.items).flatMap(([k, v]) => [k, v.color]), '#ccc'], 'fill-opacity': 0.75 } });
+            map.addLayer({ id: plConfig.layerId + '-outline', type: 'line', source: plConfig.sourceId, layout: { visibility: 'none' }, paint: { 'line-color': '#000', 'line-width': 0.5, 'line-opacity': 0.5 } });
+        }
+    });
 
     // Bangunan (persil) — GeoJSON, layer 2D
     const bgnConfig = MAP_CONFIG['bangunan'];
-    if (bgnConfig.geojsonUrl && !map.getSource(bgnConfig.sourceId)) { map.addSource(bgnConfig.sourceId, { type: 'geojson', data: bgnConfig.geojsonUrl }); }
-    if (map.getSource(bgnConfig.sourceId) && !map.getLayer(bgnConfig.layerId)) {
-        map.addLayer({ id: bgnConfig.layerId, type: 'fill', source: bgnConfig.sourceId, layout: { visibility: 'none' }, paint: { 'fill-color': bgnConfig.items['Area Bangunan'].color, 'fill-opacity': 0.7, 'fill-outline-color': bgnConfig.items['Area Bangunan'].color } });
-    }
+    safeAdd('bangunan', () => {
+        if (bgnConfig.geojsonUrl && !map.getSource(bgnConfig.sourceId)) { map.addSource(bgnConfig.sourceId, { type: 'geojson', data: bgnConfig.geojsonUrl }); }
+        if (map.getSource(bgnConfig.sourceId) && !map.getLayer(bgnConfig.layerId)) {
+            map.addLayer({ id: bgnConfig.layerId, type: 'fill', source: bgnConfig.sourceId, layout: { visibility: 'none' }, paint: { 'fill-color': bgnConfig.items['Area Bangunan'].color, 'fill-opacity': 0.7, 'fill-outline-color': bgnConfig.items['Area Bangunan'].color } });
+        }
+    });
 
-    // Jalan — GeoJSON lokal
+    // Jalan — GeoJSON lokal. Satu kelas jalan seragam (lihat catatan skema di MAP_CONFIG).
     const jlnConfig = MAP_CONFIG['jalan'];
-    if (jlnConfig.geojsonUrl && !map.getSource(jlnConfig.sourceId)) { map.addSource(jlnConfig.sourceId, { type: 'geojson', data: jlnConfig.geojsonUrl }); }
-    if (map.getSource(jlnConfig.sourceId) && !map.getLayer(jlnConfig.layerId)) {
-        map.addLayer({ id: jlnConfig.layerId, type: 'line', source: jlnConfig.sourceId, layout: { visibility: 'none', 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': ['match', ['get', jlnConfig.property], ...Object.entries(jlnConfig.items).flatMap(([k, v]) => [k, v.color]), '#ccc'], 'line-width': ['match', ['get', jlnConfig.property], ...Object.entries(jlnConfig.items).flatMap(([k, v]) => [k, v.width]), 2] } });
-    }
+    safeAdd('jalan', () => {
+        if (jlnConfig.geojsonUrl && !map.getSource(jlnConfig.sourceId)) { map.addSource(jlnConfig.sourceId, { type: 'geojson', data: jlnConfig.geojsonUrl }); }
+        if (map.getSource(jlnConfig.sourceId) && !map.getLayer(jlnConfig.layerId)) {
+            const jlnStyle = jlnConfig.items['Jaringan Jalan'];
+            map.addLayer({ id: jlnConfig.layerId, type: 'line', source: jlnConfig.sourceId, layout: { visibility: 'none', 'line-join': 'round', 'line-cap': 'round' }, paint: { 'line-color': jlnStyle.color, 'line-width': jlnStyle.width } });
+        }
+    });
 
     // Administrasi — GeoJSON lokal
     const admConfig = MAP_CONFIG['administrasi'];
-    if (admConfig.geojsonUrl && !map.getSource(admConfig.sourceId)) { map.addSource(admConfig.sourceId, { type: 'geojson', data: admConfig.geojsonUrl }); }
-    if (map.getSource(admConfig.sourceId) && !map.getLayer(admConfig.layerId)) {
-        map.addLayer({ id: admConfig.layerId, type: 'line', source: admConfig.sourceId, layout: { visibility: 'none' }, paint: { 'line-color': '#f90', 'line-width': 2.5 } });
-    }
+    safeAdd('administrasi', () => {
+        if (admConfig.geojsonUrl && !map.getSource(admConfig.sourceId)) { map.addSource(admConfig.sourceId, { type: 'geojson', data: admConfig.geojsonUrl }); }
+        if (map.getSource(admConfig.sourceId) && !map.getLayer(admConfig.layerId)) {
+            map.addLayer({ id: admConfig.layerId, type: 'line', source: admConfig.sourceId, layout: { visibility: 'none' }, paint: { 'line-color': '#f90', 'line-width': 2.5 } });
+        }
+    });
+
+    // Sapras (sarana & prasarana) — dipecah jadi 2 layer terpisah biar tahan-banting:
+    // 1) 'circle' buat titiknya — TIDAK butuh map.addImage() sama sekali, jadi dijamin render
+    //    walau ada masalah apapun dengan ikon custom.
+    // 2) 'symbol' cuma buat teks nama (Toponim) — kalau font/glyphs bermasalah, paling cuma
+    //    teksnya yang gak nongol, titiknya tetap aman muncul.
+    // Visibilitas keduanya ikut toggle "Label Peta".
+    const sprConfig = MAP_CONFIG['sapras'];
+    safeAdd('sapras', () => {
+        if (sprConfig && !map.getSource(sprConfig.sourceId)) { map.addSource(sprConfig.sourceId, { type: 'geojson', data: sprConfig.geojsonUrl }); }
+        const visNow = basemapLabelToggle.checked ? 'visible' : 'none';
+        if (sprConfig && map.getSource(sprConfig.sourceId) && !map.getLayer(sprConfig.layerId)) {
+            map.addLayer({
+                id: sprConfig.layerId, type: 'circle', source: sprConfig.sourceId,
+                layout: { visibility: visNow },
+                paint: {
+                    'circle-radius': 6,
+                    'circle-color': '#b5737a',
+                    'circle-stroke-width': 2,
+                    'circle-stroke-color': '#ffffff'
+                }
+            });
+        }
+        if (sprConfig && map.getSource(sprConfig.sourceId) && !map.getLayer(sprConfig.labelLayerId)) {
+            map.addLayer({
+                id: sprConfig.labelLayerId, type: 'symbol', source: sprConfig.sourceId,
+                layout: {
+                    visibility: visNow,
+                    'text-field': ['get', 'Toponim'], 'text-font': ['Noto Sans Regular', 'Open Sans Regular', 'Arial Unicode MS Regular'],
+                    'text-size': 11, 'text-offset': [0, 1.1], 'text-anchor': 'top',
+                    'text-allow-overlap': true, 'text-ignore-placement': true, 'text-optional': true
+                },
+                paint: { 'text-color': '#3d2a10', 'text-halo-color': '#fff', 'text-halo-width': 1.4 }
+            });
+        }
+    });
 
     // Bangunan 3D (extrusion)
-    if (map.getSource(bgnConfig.sourceId) && !map.getLayer('bangunan-3d-layer')) {
-        map.addLayer({ 'id': 'bangunan-3d-layer', 'type': 'fill-extrusion', 'source': bgnConfig.sourceId, 'layout': { 'visibility': 'none' }, 'paint': { 'fill-extrusion-color': '#E67E22', 'fill-extrusion-opacity': 0.8, 'fill-extrusion-height': ['interpolate', ['linear'], ['get', 'jumlah_lan'], 1, 5, 2, 10, 3, 15], 'fill-extrusion-base': 0 } });
-    }
+    safeAdd('bangunan-3d', () => {
+        if (map.getSource(bgnConfig.sourceId) && !map.getLayer('bangunan-3d-layer')) {
+            map.addLayer({ 'id': 'bangunan-3d-layer', 'type': 'fill-extrusion', 'source': bgnConfig.sourceId, 'layout': { 'visibility': 'none' }, 'paint': { 'fill-extrusion-color': '#E67E22', 'fill-extrusion-opacity': 0.8, 'fill-extrusion-height': ['interpolate', ['linear'], ['get', 'jumlah_lan'], 1, 5, 2, 10, 3, 15], 'fill-extrusion-base': 0 } });
+        }
+    });
 
     // Orientasi Bangunan — titik panah arah hadap
-    if (!map.hasImage('arrow-orientasi')) { map.addImage('arrow-orientasi', createArrowIcon()); }
-    const oriConfig = MAP_CONFIG['orientasi-bangunan'];
-    if (oriConfig && !map.getSource(oriConfig.sourceId)) { map.addSource(oriConfig.sourceId, { type: 'geojson', data: oriConfig.geojsonUrl }); }
-    if (oriConfig && map.getSource(oriConfig.sourceId) && !map.getLayer(oriConfig.layerId)) {
-        map.addLayer({
-            id: oriConfig.layerId, type: 'symbol', source: oriConfig.sourceId,
-            layout: { visibility: 'none', 'icon-image': 'arrow-orientasi', 'icon-size': 0.55, 'icon-rotate': ['get', 'arah_hadap_deg'], 'icon-rotation-alignment': 'map', 'icon-allow-overlap': true, 'icon-ignore-placement': true }
-        });
-    }
+    safeAdd('orientasi-bangunan', () => {
+        if (!map.hasImage('arrow-orientasi')) { map.addImage('arrow-orientasi', createArrowIcon()); }
+        const oriConfig = MAP_CONFIG['orientasi-bangunan'];
+        if (oriConfig && !map.getSource(oriConfig.sourceId)) { map.addSource(oriConfig.sourceId, { type: 'geojson', data: oriConfig.geojsonUrl }); }
+        if (oriConfig && map.getSource(oriConfig.sourceId) && !map.getLayer(oriConfig.layerId)) {
+            map.addLayer({
+                id: oriConfig.layerId, type: 'symbol', source: oriConfig.sourceId,
+                layout: { visibility: 'none', 'icon-image': 'arrow-orientasi', 'icon-size': 0.55, 'icon-rotate': ['get', 'arah_hadap_deg'], 'icon-rotation-alignment': 'map', 'icon-allow-overlap': true, 'icon-ignore-placement': true }
+            });
+        }
+    });
 
-// === PERKEBUNAN ===
+    // === PERKEBUNAN === (handler klik/hover-nya ada di setupPerkebunanPopup, dipanggil sekali saja saat map load)
+    safeAdd('perkebunan', () => {
         const kebunConfig = MAP_CONFIG['perkebunan'];
         if (kebunConfig && !map.getSource(kebunConfig.sourceId)) {
             map.addSource(kebunConfig.sourceId, { type: 'geojson', data: kebunConfig.geojsonUrl });
@@ -217,32 +305,42 @@ document.addEventListener('DOMContentLoaded', function () {
                     'fill-outline-color': 'rgba(0,0,0,0.3)'
                 }
             });
-            map.on('click', kebunConfig.layerId, (e) => {
-                const p = e.features[0].properties;
-                new maplibregl.Popup({ closeButton: true, maxWidth: '260px' })
-                    .setLngLat(e.lngLat)
-                    .setHTML(`
-                        <div class="popup-content">
-                            <div class="popup-title"><i class="fa-solid fa-seedling"></i> Data Perkebunan</div>
-                            <div class="popup-row"><span>Jenis</span><strong>${p.JENIS_KEBUN || '-'}</strong></div>
-                            <div class="popup-row"><span>Luas</span><strong>${p.LUAS_HA ? p.LUAS_HA + ' Ha' : '-'}</strong></div>
-                            <div class="popup-row"><span>Luas (m²)</span><strong>${p.LUAS_M2 ? p.LUAS_M2 + ' m²' : '-'}</strong></div>
-                        </div>`)
-                    .addTo(map);
-            });
-            map.on('mouseenter', kebunConfig.layerId, () => map.getCanvas().style.cursor = 'pointer');
-            map.on('mouseleave', kebunConfig.layerId, () => map.getCanvas().style.cursor = '');
         }
+    });
 
-        // Batas RT — sumbernya GeoJSON lokal ...  ← baris ini sudah ada, jangan dihapus
     // Batas RT
     const rtConfig = MAP_CONFIG['batas-rt'];
-    if (rtConfig && !map.getSource(rtConfig.sourceId)) { map.addSource(rtConfig.sourceId, { type: 'geojson', data: rtConfig.geojsonUrl }); }
-    if (rtConfig && map.getSource(rtConfig.sourceId) && !map.getLayer(rtConfig.layerId)) {
-        map.addLayer({ id: rtConfig.layerId, type: 'fill', source: rtConfig.sourceId, layout: { visibility: 'none' }, paint: { 'fill-color': ['match', ['get', rtConfig.property], ...Object.entries(rtConfig.items).flatMap(([k, v]) => [k, v.color]), '#ccc'], 'fill-opacity': 0.55 } });
-        map.addLayer({ id: rtConfig.layerId + '-outline', type: 'line', source: rtConfig.sourceId, layout: { visibility: 'none' }, paint: { 'line-color': '#3d4a32', 'line-width': 1.5, 'line-opacity': 0.8 } });
-    }
+    safeAdd('batas-rt', () => {
+        if (rtConfig && !map.getSource(rtConfig.sourceId)) { map.addSource(rtConfig.sourceId, { type: 'geojson', data: rtConfig.geojsonUrl }); }
+        if (rtConfig && map.getSource(rtConfig.sourceId) && !map.getLayer(rtConfig.layerId)) {
+            map.addLayer({ id: rtConfig.layerId, type: 'fill', source: rtConfig.sourceId, layout: { visibility: 'none' }, paint: { 'fill-color': ['match', ['get', rtConfig.property], ...Object.entries(rtConfig.items).flatMap(([k, v]) => [k, v.color]), '#ccc'], 'fill-opacity': 0.55 } });
+            map.addLayer({ id: rtConfig.layerId + '-outline', type: 'line', source: rtConfig.sourceId, layout: { visibility: 'none' }, paint: { 'line-color': '#3d4a32', 'line-width': 1.5, 'line-opacity': 0.8 } });
+        }
+    });
 }
+
+    // ===== Popup klik untuk Perkebunan — dipanggil SEKALI saja saat map load, bukan tiap ganti basemap =====
+    // (sebelumnya listener klik ini ada di dalam addCustomDataLayers, jadi tiap ganti basemap dia
+    // ke-daftar ulang dan numpuk — akibatnya satu klik bisa munculin popup berkali-kali)
+    function setupPerkebunanPopup() {
+        const kebunConfig = MAP_CONFIG['perkebunan'];
+        map.on('click', kebunConfig.layerId, (e) => {
+            if (!e.features || !e.features.length) return;
+            const p = e.features[0].properties;
+            new maplibregl.Popup({ closeButton: true, maxWidth: '260px' })
+                .setLngLat(e.lngLat)
+                .setHTML(`
+                    <div class="popup-content">
+                        <div class="popup-title"><i class="fa-solid fa-seedling"></i> Data Perkebunan</div>
+                        <div class="popup-row"><span>Jenis</span><strong>${p.JENIS_KEBUN || '-'}</strong></div>
+                        <div class="popup-row"><span>Luas</span><strong>${p.LUAS_HA ? p.LUAS_HA + ' Ha' : '-'}</strong></div>
+                        <div class="popup-row"><span>Luas (m²)</span><strong>${p.LUAS_M2 ? p.LUAS_M2 + ' m²' : '-'}</strong></div>
+                    </div>`)
+                .addTo(map);
+        });
+        map.on('mouseenter', kebunConfig.layerId, () => map.getCanvas().style.cursor = 'pointer');
+        map.on('mouseleave', kebunConfig.layerId, () => map.getCanvas().style.cursor = '');
+    }
 
 map.on('load', () => {
     const safeCall = (fn, label) => { try { fn(); } catch (err) { console.error(`Gagal menjalankan ${label}:`, err); } };
@@ -255,6 +353,9 @@ map.on('load', () => {
     safeCall(setupLiveCoordDisplay, 'setupLiveCoordDisplay');
     safeCall(setupRTPopup, 'setupRTPopup');
     safeCall(setupBangunanPopup, 'setupBangunanPopup');
+    safeCall(setupJalanPopup, 'setupJalanPopup');
+    safeCall(setupSaprasPopup, 'setupSaprasPopup');
+    safeCall(setupPerkebunanPopup, 'setupPerkebunanPopup');
 });
     function createArrowIcon(size = 32, color = '#E67E22') {
     const canvas = document.createElement('canvas');
@@ -278,6 +379,24 @@ map.on('load', () => {
     const imageData = ctx.getImageData(0, 0, size, size);
     return { width: size, height: size, data: imageData.data };
 }
+
+    // Ikon titik untuk Sapras — dot bulat dengan border putih, digambar via canvas (bukan file gambar terpisah)
+    function createDotIcon(size = 28, color = '#b5737a') {
+        const canvas = document.createElement('canvas');
+        canvas.width = size; canvas.height = size;
+        const ctx = canvas.getContext('2d');
+        const r = size * 0.32;
+        ctx.translate(size / 2, size / 2);
+        ctx.beginPath();
+        ctx.arc(0, 0, r, 0, Math.PI * 2);
+        ctx.fillStyle = color;
+        ctx.fill();
+        ctx.lineWidth = size * 0.09;
+        ctx.strokeStyle = '#fff';
+        ctx.stroke();
+        const imageData = ctx.getImageData(0, 0, size, size);
+        return { width: size, height: size, data: imageData.data };
+    }
     // ===== Popup klik untuk poligon Batas RT — rekap pendidikan (+ pekerjaan) per RT =====
     function setupRTPopup() {
         const rtConfig = MAP_CONFIG['batas-rt'];
@@ -352,6 +471,48 @@ map.on('load', () => {
     map.on('mouseenter', bgnConfig.layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
     map.on('mouseleave', bgnConfig.layerId, () => { map.getCanvas().style.cursor = ''; });
 }
+
+    // ===== Popup klik untuk ruas Jalan — nama jalan (Toponim) & panjang ruas =====
+    function setupJalanPopup() {
+        const jlnConfig = MAP_CONFIG['jalan'];
+        map.on('click', jlnConfig.layerId, (e) => {
+            if (!e.features || !e.features.length) return;
+            const p = e.features[0].properties;
+            const namaJalan = p.Toponim && p.Toponim.trim() ? p.Toponim.trim() : 'Jalan tanpa nama';
+            const panjang = p.Shape_Leng ? `${Number(p.Shape_Leng).toFixed(1)} m` : '-';
+            const html = `
+                <div style="font-family:'Poppins',sans-serif; min-width:180px;">
+                    <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#3d4a32;">${namaJalan}</div>
+                    <table style="width:100%; font-size:12.5px; border-collapse:collapse;">
+                        <tr><td style="padding:2px 0;">Panjang Ruas</td><td style="text-align:right; font-weight:600;">${panjang}</td></tr>
+                    </table>
+                </div>`;
+            new maplibregl.Popup({ closeButton: true, maxWidth: '240px' }).setLngLat(e.lngLat).setHTML(html).addTo(map);
+        });
+        map.on('mouseenter', jlnConfig.layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+        map.on('mouseleave', jlnConfig.layerId, () => { map.getCanvas().style.cursor = ''; });
+    }
+
+    // ===== Popup klik untuk titik Sapras — nama fasilitas (Toponim) & keterangan =====
+    function setupSaprasPopup() {
+        const sprConfig = MAP_CONFIG['sapras'];
+        map.on('click', sprConfig.layerId, (e) => {
+            if (!e.features || !e.features.length) return;
+            const p = e.features[0].properties;
+            const namaSapras = p.Toponim && p.Toponim.trim() ? p.Toponim.trim() : 'Sarana/Prasarana tanpa nama';
+            const keterangan = p.Keterangan && p.Keterangan.trim() ? p.Keterangan.trim() : '-';
+            const html = `
+                <div style="font-family:'Poppins',sans-serif; min-width:180px;">
+                    <div style="font-weight:700; font-size:14px; margin-bottom:6px; color:#3d4a32;">${namaSapras}</div>
+                    <table style="width:100%; font-size:12.5px; border-collapse:collapse;">
+                        <tr><td style="padding:2px 0;">Keterangan</td><td style="text-align:right; font-weight:600;">${keterangan}</td></tr>
+                    </table>
+                </div>`;
+            new maplibregl.Popup({ closeButton: true, maxWidth: '240px' }).setLngLat(e.lngLat).setHTML(html).addTo(map);
+        });
+        map.on('mouseenter', sprConfig.layerId, () => { map.getCanvas().style.cursor = 'pointer'; });
+        map.on('mouseleave', sprConfig.layerId, () => { map.getCanvas().style.cursor = ''; });
+    }
 
     // ===== PROSES DATA — properti disesuaikan dengan skema Excel/GeoJSON baru =====
     function processAllData(buildingFeatures, landUseFeatures) {
@@ -684,15 +845,33 @@ map.on('load', () => {
     }
 });
     function renderMap() { updateLayerVisibility(); updateLegend(); }
-    function updateLayerVisibility() { const isAdministrasiVisible = administrasiToggle.checked; const selectedArea = areaSelect.value; const isJalanVisible = jalanToggle.checked; Object.keys(MAP_CONFIG).forEach(key => { if (key === 'orientasi-bangunan') return; const config = MAP_CONFIG[key]; if (!map.getLayer(config.layerId)) return; let shouldBeVisible = false; if (key === 'administrasi' && isAdministrasiVisible) shouldBeVisible = true; if (key === selectedArea) shouldBeVisible = true; if (key === 'jalan' && isJalanVisible) shouldBeVisible = true; map.setLayoutProperty(config.layerId, 'visibility', shouldBeVisible ? 'visible' : 'none'); if (map.getLayer(config.layerId + '-outline')) { map.setLayoutProperty(config.layerId + '-outline', 'visibility', shouldBeVisible ? 'visible' : 'none'); } }); const isBuildingAreaSelected = selectedArea === 'bangunan'; const threeDToggle = document.getElementById('toggle-3d-buildings'); const is3DOn = threeDToggle?.checked || false; if (map.getLayer('bangunan-3d-layer')) { map.setLayoutProperty('bangunan-3d-layer', 'visibility', isBuildingAreaSelected && is3DOn ? 'visible' : 'none'); } if (!isBuildingAreaSelected && threeDToggle) { if (threeDToggle.checked) { threeDToggle.checked = false; } updatePaintProperties('bangunan'); } }
+    function updateLayerVisibility() { const isAdministrasiVisible = administrasiToggle.checked; const selectedArea = areaSelect.value; const isJalanVisible = jalanToggle.checked; Object.keys(MAP_CONFIG).forEach(key => { if (key === 'orientasi-bangunan' || key === 'sapras') return; const config = MAP_CONFIG[key]; if (!map.getLayer(config.layerId)) return; let shouldBeVisible = false; if (key === 'administrasi' && isAdministrasiVisible) shouldBeVisible = true; if (key === selectedArea) shouldBeVisible = true; if (key === 'jalan' && isJalanVisible) shouldBeVisible = true; map.setLayoutProperty(config.layerId, 'visibility', shouldBeVisible ? 'visible' : 'none'); if (map.getLayer(config.layerId + '-outline')) { map.setLayoutProperty(config.layerId + '-outline', 'visibility', shouldBeVisible ? 'visible' : 'none'); } }); const isBuildingAreaSelected = selectedArea === 'bangunan'; const threeDToggle = document.getElementById('toggle-3d-buildings'); const is3DOn = threeDToggle?.checked || false; if (map.getLayer('bangunan-3d-layer')) { map.setLayoutProperty('bangunan-3d-layer', 'visibility', isBuildingAreaSelected && is3DOn ? 'visible' : 'none'); } if (!isBuildingAreaSelected && threeDToggle) { if (threeDToggle.checked) { threeDToggle.checked = false; } updatePaintProperties('bangunan'); } }
     function updateLegend() { legendContainer.innerHTML = ''; const activeGroups = []; if (areaSelect.value !== 'none') activeGroups.push(areaSelect.value); if (jalanToggle.checked && map.getSource(MAP_CONFIG['jalan'].sourceId)) activeGroups.push('jalan'); if (activeGroups.length === 0) { legendContainer.innerHTML = '<span style="color: var(--text-secondary); font-size: 13px;">Aktifkan layer untuk melihat legenda.</span>'; } else { activeGroups.forEach(groupKey => { const groupElement = createLegendGroup(groupKey); legendContainer.appendChild(groupElement); }); } }
     function createLegendGroup(groupKey) { const config = MAP_CONFIG[groupKey]; const groupDiv = document.createElement('div'); groupDiv.className = 'legend-group'; groupDiv.innerHTML = `<h3>${config.legendTitle}</h3>`; const list = document.createElement('div'); list.className = 'legend-list'; Object.entries(config.items).forEach(([itemKey, itemConfig]) => { const isChecked = layerVisibilityState[groupKey][itemKey]; const itemElement = document.createElement('label'); itemElement.className = 'legend-item'; let symbolHtml = ''; if (itemConfig.type === 'fill') { symbolHtml = `<div class="legend-symbol fill" style="background-color: ${itemConfig.color}; border: 1px solid #777"></div>`; } else if (itemConfig.type === 'fill-outline') { symbolHtml = `<div class="legend-symbol fill" style="background-color: transparent; border: 2px solid ${itemConfig.color};"></div>`; } else if (itemConfig.type.startsWith('line')) { const borderStyle = itemConfig.type === 'line-dashed' ? 'dashed' : 'solid'; symbolHtml = `<div class="legend-symbol line" style="border-top: 3px ${borderStyle} ${itemConfig.color};"></div>`; } else if (itemConfig.type === 'icon') { symbolHtml = `<div class="legend-symbol icon"><img src="https://cdn.jsdelivr.net/npm/@mapbox/maki@8.0.0/icons/${itemConfig['icon-image']}.svg" alt="${itemKey}"></div>`; } itemElement.innerHTML = `<input type="checkbox" data-group="${groupKey}" data-item="${itemKey}" ${isChecked ? 'checked' : ''}><span class="checkbox-slider"></span> ${symbolHtml} <span class="legend-label">${itemKey}</span>`; itemElement.querySelector('input').addEventListener('change', (e) => { const { group, item } = e.target.dataset; layerVisibilityState[group][item] = e.target.checked; updatePaintProperties(group); if (group === 'bangunan' && item === 'Area Bangunan') { const isParentOn = e.target.checked; const threeDToggle = document.getElementById('toggle-3d-buildings'); const twoDFillLayer = map.getLayer(config.layerId); if (threeDToggle) { threeDToggle.disabled = !isParentOn; if (!isParentOn) { threeDToggle.checked = false; map.setLayoutProperty('bangunan-3d-layer', 'visibility', 'none'); if (twoDFillLayer) map.setPaintProperty(config.layerId, 'fill-opacity', 0); } else { const is3DOn = threeDToggle.checked; if (twoDFillLayer) map.setPaintProperty(config.layerId, 'fill-opacity', is3DOn ? 0 : 0.7); } } } }); list.appendChild(itemElement); }); if (groupKey === 'bangunan') { const threeDToggleItem = document.createElement('label'); threeDToggleItem.className = 'legend-item'; threeDToggleItem.innerHTML = `<input type="checkbox" id="toggle-3d-buildings"><span class="checkbox-slider"></span><i class="fa-solid fa-cube icon-3d"></i><span class="legend-label">3D Bangunan</span>`; threeDToggleItem.querySelector('input').addEventListener('change', (e) => { const is3DOn = e.target.checked; map.setLayoutProperty('bangunan-3d-layer', 'visibility', is3DOn ? 'visible' : 'none'); updatePaintProperties('bangunan'); }); list.appendChild(threeDToggleItem); } groupDiv.appendChild(list); return groupDiv; }
     let isAutoRotating = false, isRightSidebarOriginallyOpen = false, hiddenLabelLayerIds = [];
     function disableMapInteraction() { map.boxZoom.disable(); map.scrollZoom.disable(); map.dragPan.disable(); map.dragRotate.disable(); map.keyboard.disable(); map.doubleClickZoom.disable(); map.touchZoomRotate.disable(); }
     function enableMapInteraction() { map.boxZoom.enable(); map.scrollZoom.enable(); map.dragPan.enable(); map.keyboard.enable(); map.doubleClickZoom.enable(); map.touchZoomRotate.enable(); }
-    function hideMapLabels() { const layers = map.getStyle().layers; hiddenLabelLayerIds = []; for (const layer of layers) { if (layer.type === 'symbol') { try { map.setLayoutProperty(layer.id, 'visibility', 'none'); hiddenLabelLayerIds.push(layer.id); } catch (e) { } } } }
+    // Layer symbol MILIK KITA SENDIRI yang punya toggle terpisah (bukan label bawaan basemap) —
+    // harus dikecualikan dari sapuan hideMapLabels/showMapLabels, kalau enggak toggle "Label Peta"
+    // bakal ikut nyalain/matiin layer-layer ini juga (bug: nyalain Label Peta malah nongolin
+    // panah Orientasi Bangunan).
+    function getOwnSymbolLayerIds() {
+        const ids = [];
+        const oriConfig = MAP_CONFIG['orientasi-bangunan'];
+        if (oriConfig) ids.push(oriConfig.layerId);
+        const sprConfig = MAP_CONFIG['sapras'];
+        if (sprConfig) { ids.push(sprConfig.labelLayerId); }
+        return ids;
+    }
+    function hideMapLabels() { const ownIds = getOwnSymbolLayerIds(); const layers = map.getStyle().layers; hiddenLabelLayerIds = []; for (const layer of layers) { if (layer.type === 'symbol' && !ownIds.includes(layer.id)) { try { map.setLayoutProperty(layer.id, 'visibility', 'none'); hiddenLabelLayerIds.push(layer.id); } catch (e) { } } } }
     function showMapLabels() { for (const layerId of hiddenLabelLayerIds) { if (map.getLayer(layerId)) { try { map.setLayoutProperty(layerId, 'visibility', 'visible'); } catch (e) { } } } }
-    basemapLabelToggle.addEventListener('change', (e) => { e.target.checked ? showMapLabels() : hideMapLabels(); });
+    basemapLabelToggle.addEventListener('change', (e) => {
+        e.target.checked ? showMapLabels() : hideMapLabels();
+        const sprConfig = MAP_CONFIG['sapras'];
+        const vis = e.target.checked ? 'visible' : 'none';
+        if (map.getLayer(sprConfig.layerId)) { map.setLayoutProperty(sprConfig.layerId, 'visibility', vis); }
+        if (map.getLayer(sprConfig.labelLayerId)) { map.setLayoutProperty(sprConfig.labelLayerId, 'visibility', vis); }
+    });
     startBtn.addEventListener('click', () => { resetToIntroBtn.style.pointerEvents = 'none'; resetToIntroBtn.style.opacity = '0.5'; disableMapInteraction(); introOverlay.style.opacity = '0'; introOverlay.style.pointerEvents = 'none'; setTimeout(() => { mapBackground.style.display = 'none'; appContainer.classList.remove('hidden'); mapSection.insertBefore(mapElement, mapSection.firstChild); appContainer.classList.add('left-collapsed', 'right-collapsed', 'both-collapsed'); updateMapPadding(); resizeMap(); renderMap(); enableMapInteraction(); resetToIntroBtn.style.pointerEvents = 'auto'; resetToIntroBtn.style.opacity = '1'; fetchAllData(); }, cssTransitionDuration); });
     function resetToIntro() { chartDataCache = null; isDataFetching = false; isDataViewInitialized = false; switchToView('#map-section'); startBtn.disabled = true; disableMapInteraction(); if (isAutoRotating) { isAutoRotating = false; document.getElementById('rotate-btn').classList.remove('active'); } if (basemapLabelToggle.checked) { basemapLabelToggle.checked = false; } appContainer.classList.add('hidden'); introOverlay.style.opacity = '1'; introOverlay.style.pointerEvents = 'auto'; mapBackground.style.display = 'block'; mapBackground.appendChild(mapElement); resizeMap(); Object.values(MAP_CONFIG).forEach(config => { if (map.getLayer(config.layerId)) map.setLayoutProperty(config.layerId, 'visibility', 'none'); if (map.getLayer(config.layerId + '-outline')) map.setLayoutProperty(config.layerId + '-outline', 'visibility', 'none'); }); map.jumpTo(finalLocation); hideMapLabels(); startBtn.disabled = false; }
     resetToIntroBtn.addEventListener('click', resetToIntro);
@@ -703,7 +882,27 @@ map.on('load', () => {
     openRightBtn.addEventListener('click', () => { if (!appContainer.classList.contains('right-collapsed')) return; appContainer.classList.remove('right-collapsed'); appContainer.classList.remove('both-collapsed'); resizeMap(); });
     closeRightBtn.addEventListener('click', () => { if (appContainer.classList.contains('right-collapsed')) return; appContainer.classList.add('right-collapsed'); if (appContainer.classList.contains('left-collapsed')) appContainer.classList.add('both-collapsed'); resizeMap(); });
     document.getElementById('pitch-slider').addEventListener('input', (e) => { const pitch = parseInt(e.target.value, 10); map.setPitch(pitch); document.getElementById('pitch-value').textContent = pitch; });
-    document.getElementById('layer-select').addEventListener('change', (e) => { map.setStyle(BASEMAP_STYLES[e.target.value] || ESRI_SATELLITE_STYLE); map.once('style.load', () => { addCustomDataLayers(); updateLayerVisibility(); applyAllPaintProperties(); if (!basemapLabelToggle.checked) hideMapLabels(); }); });
+    document.getElementById('layer-select').addEventListener('change', (e) => {
+        const nextStyle = BASEMAP_STYLES[e.target.value] || ESRI_SATELLITE_STYLE;
+        // diff:false = ganti style secara bersih total (bukan cuma di-diff), supaya semua
+        // source/layer custom yang kita tambahkan runtime (administrasi, jalan, sapras, dst)
+        // benar-benar dibuang habis dan tidak bentrok id saat ditambahkan ulang di bawah.
+        map.setStyle(nextStyle, { diff: false });
+        map.once('style.load', () => {
+            try {
+                addCustomDataLayers();
+                updateLayerVisibility();
+                applyAllPaintProperties();
+                if (!basemapLabelToggle.checked) hideMapLabels();
+                const sprConfig = MAP_CONFIG['sapras'];
+                const vis = basemapLabelToggle.checked ? 'visible' : 'none';
+                if (map.getLayer(sprConfig.layerId)) { map.setLayoutProperty(sprConfig.layerId, 'visibility', vis); }
+                if (map.getLayer(sprConfig.labelLayerId)) { map.setLayoutProperty(sprConfig.labelLayerId, 'visibility', vis); }
+            } catch (err) {
+                console.error('Gagal memasang ulang layer setelah ganti basemap:', err);
+            }
+        });
+    });
     document.getElementById('zoom-in-btn').addEventListener('click', () => map.zoomIn());
     document.getElementById('zoom-out-btn').addEventListener('click', () => map.zoomOut());
     document.getElementById('reset-view-btn').addEventListener('click', () => { const currentPitch = map.getPitch(); map.flyTo({ ...finalLocation, padding: map.getPadding(), pitch: currentPitch }); });

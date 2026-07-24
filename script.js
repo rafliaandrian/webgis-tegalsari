@@ -921,7 +921,7 @@ map.on('load', () => {
     const mainNavItems = document.querySelectorAll('.sidebar-left-content .nav-item');
     const contentSections = document.querySelectorAll('.content-section');
     const rightSidebar = document.querySelector('.sidebar-right');
-    function switchToView(targetId) { document.querySelectorAll('.sidebar-left-content .nav-item').forEach(i => { if (i.dataset.target) { i.classList.toggle('active', i.dataset.target === targetId); } }); contentSections.forEach(section => { section.classList.add('hidden'); }); const targetSection = document.querySelector(targetId); if (targetSection) { targetSection.classList.remove('hidden'); } switch (targetId) { case '#data-section': downloadIcon.className = 'fa-solid fa-file-csv'; downloadTextSpan.textContent = 'Unduh Data'; loadDataView(); break; case '#media-section': downloadIcon.className = 'fa-solid fa-file-image'; downloadTextSpan.textContent = 'Unduh Media'; currentPage = 1; loadMediaGallery(); break; case '#map-section': default: downloadIcon.className = 'fa-solid fa-map'; downloadTextSpan.textContent = 'Unduh Peta'; break; } if (targetId === '#map-section') { rightSidebar.style.display = 'flex'; if (isRightSidebarOriginallyOpen) { appContainer.classList.remove('right-collapsed'); if (!appContainer.classList.contains('left-collapsed')) appContainer.classList.remove('both-collapsed'); } else { appContainer.classList.add('right-collapsed'); if (appContainer.classList.contains('left-collapsed')) appContainer.classList.add('both-collapsed'); } setTimeout(() => map.resize(), 0); } else { isRightSidebarOriginallyOpen = !appContainer.classList.contains('right-collapsed'); rightSidebar.style.display = 'none'; appContainer.classList.add('right-collapsed'); if (appContainer.classList.contains('left-collapsed')) appContainer.classList.add('both-collapsed'); } }
+    function switchToView(targetId) { document.querySelectorAll('.sidebar-left-content .nav-item').forEach(i => { if (i.dataset.target) { i.classList.toggle('active', i.dataset.target === targetId); } }); contentSections.forEach(section => { section.classList.add('hidden'); }); const targetSection = document.querySelector(targetId); if (targetSection) { targetSection.classList.remove('hidden'); } switch (targetId) { case '#data-section': downloadIcon.className = 'fa-solid fa-file-csv'; loadDataView(); break; case '#media-section': downloadIcon.className = 'fa-solid fa-file-image'; downloadTextSpan.textContent = 'Unduh Media'; currentPage = 1; loadMediaGallery(); break; case '#map-section': default: downloadIcon.className = 'fa-solid fa-map'; downloadTextSpan.textContent = 'Unduh Peta'; break; } if (targetId === '#map-section') { rightSidebar.style.display = 'flex'; if (isRightSidebarOriginallyOpen) { appContainer.classList.remove('right-collapsed'); if (!appContainer.classList.contains('left-collapsed')) appContainer.classList.remove('both-collapsed'); } else { appContainer.classList.add('right-collapsed'); if (appContainer.classList.contains('left-collapsed')) appContainer.classList.add('both-collapsed'); } setTimeout(() => map.resize(), 0); } else { isRightSidebarOriginallyOpen = !appContainer.classList.contains('right-collapsed'); rightSidebar.style.display = 'none'; appContainer.classList.add('right-collapsed'); if (appContainer.classList.contains('left-collapsed')) appContainer.classList.add('both-collapsed'); } }
     document.querySelectorAll('.sidebar-left-content .nav-item').forEach(item => { if (item.dataset.target) { item.addEventListener('click', () => { switchToView(item.dataset.target); }); } });
 
     // ===== KOORDINAT & ZOOM LIVE (header + status bar + compass, kalau elemennya ada) =====
@@ -978,22 +978,18 @@ map.on('load', () => {
 
     const DOWNLOAD_OPTIONS = {
     peta: [
-        { id: 'peta_batas_dusun', title: 'Peta Batas Dusun (.pdf)', url: './source/peta/peta_batas_dusun.pdf' },
+        { id: 'peta_batas_dusun', title: 'Peta Batas Dusun (.png)', url: './source/peta/peta_batas_dusun.png' },
         { id: 'peta_pl_a1', title: 'Peta Penggunaan Lahan A1 (.png)', url: './source/peta/peta_pl_a1.png' },
         { id: 'peta_definitif_pl_a3', title: 'Peta Definitif Penggunaan Lahan A3 (.png)', url: './source/peta/peta_definitif_pl_a3.png' },
         { id: 'peta_bangunan', title: 'Peta Bangunan (.png)', url: './source/peta/peta_bangunan.png' },
         { id: 'peta_kondisi_bangunan', title: 'Peta Kondisi Bangunan (.png)', url: './source/peta/peta_kondisi_bangunan.png' },
-        { id: 'peta_orientasi_bangunan', title: 'Peta Orientasi Bangunan (.pdf)', url: './source/peta/peta_oroentasi_bangunan.pdf' },
+        { id: 'peta_orientasi_bangunan', title: 'Peta Orientasi Bangunan (.png)', url: './source/peta/peta_orientasi_bangunan.png' },
         { id: 'peta_sarpras', title: 'Peta Sarana Prasarana (.png)', url: './source/peta/peta_sarpras.png' },
         { id: 'peta_sebaran_tanaman', title: 'Peta Sebaran Tanaman (.png)', url: './source/peta/peta_sebaran_tanaman.png' },
-        { id: 'peta_mata_pencaharian', title: 'Peta Mata Pencaharian (.pdf)', url: './source/peta/peta_mata_pencaharian.pdf' },
+        { id: 'peta_mata_pencaharian', title: 'Peta Mata Pencaharian (.png)', url: './source/peta/peta_mata_pencaharian.png' },
         { id: 'peta_pendidikan', title: 'Peta Sebaran Jenjang Pendidikan (.png)', url: './source/peta/peta_sebaran_jenjang_pendidikan.png' },
         { id: 'peta_foto_udara', title: 'Peta Foto Udara (.png)', url: './source/peta/peta_foto_udara.png' },
     ],
-    data: [
-        { id: 'data_survei_bangunan', title: 'Data Survei Bangunan (.csv)', url: './source/data/Sensus_Penduduk.csv' },
-        { id: 'data_survei_lahan', title: 'Data Survei Penggunaan Lahan (.csv)', url: './source/data/Kesesuaian_PL.csv' },
-    ]
 };
 
     function setupDownloadLightbox() {
@@ -1047,7 +1043,6 @@ map.on('load', () => {
         } else {
             const options = DOWNLOAD_OPTIONS[sectionKey] || [];
             if (sectionKey === 'peta') titleEl.textContent = 'Unduh Peta';
-            else if (sectionKey === 'data') titleEl.textContent = 'Unduh Data';
             options.forEach(item => {
                 const isDisabled = item.disabled ? 'disabled' : '';
                 listEl.insertAdjacentHTML('beforeend', `<label class="download-item" ${isDisabled ? 'style="opacity:0.5; cursor:not-allowed;"' : ''}><input type="checkbox" data-url="${item.url || ''}" data-type="file" ${isDisabled}><span class="checkmark"></span><span>${item.title}</span></label>`);
